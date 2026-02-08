@@ -1,0 +1,6 @@
+messages:
+  noPlayer: "§c%player% not found"
+  youAreNotPlayer: "§cYou need to be a player to run this command!"
+guis:
+  KitGUI:
+    title: "Kits"
