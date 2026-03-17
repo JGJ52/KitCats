@@ -1,6 +1,34 @@
 messages:
   noPlayer: "§c%player% not found"
   youAreNotPlayer: "§cYou need to be a player to run this command!"
+  noArgs: "§cNot enough args"
+  kitCreated: "§aKit successfully created!"
+  alreadyName: "§cA kit with this name already exists"
 guis:
+  KitPreviewGUI:
+    name: "Kit preview"
+    editItemName: "§fEdit kit"
   KitGUI:
-    title: "Kits"
+    name: "Kits"
+    previousArrow: "§fPrevious page"
+    nextArrow: "§fNext page"
+    iconLore:
+      - "§5Left click to load"
+      - "§5Right click to preview/edit"
+  KitCreateGUI:
+    name: "Create kit"
+    setNameItemName: "§fClick this to set the name of your kit"
+    setIconItemName: "§fClick this to set the icon of your kit"
+    setContentItemName: "§fClick this to set the content of your kit"
+    saveItemName: "§fClick this to save your kit"
+    setNameMessage: "§eType the name of your kit to the chat"
+    setIconMessage: "§eHold the item you want as icon and type \"done\""
+    setContentMessage: "§eGet your kit into your inventory, then type \"done\""
+    nameOrContentNotSet: "§cYou need to set the name and the content of your kit!"
+    saved: "§aKit successfully saved!"
+  EditKitGUI:
+    name: "Edit kit"
+    saveItemName: "§aSave"
+    resetItemName: "§4Reset kit"
+data:
+  kits: {}
