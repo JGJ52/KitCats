@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.Commands;
 
+import hu.jgj52.kitCats.GUIs.EditKitGUI;
 import hu.jgj52.kitCats.GUIs.KitCreateGUI;
 import hu.jgj52.kitCats.GUIs.KitGUI;
 import hu.jgj52.kitCats.GUIs.KitPreviewGUI;
@@ -80,6 +81,31 @@ public class KitCommand implements CommandExecutor, TabCompleter {
 
                 Kit kit = Kit.of(args[1]);
                 new KitPreviewGUI(kit).open(player);
+                return new Result(true, new ArrayList<>(), true);
+            } else {
+                List<String> complete = new ArrayList<>();
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                if (section != null) {
+                    for (String name : section.getKeys(false)) {
+                        Kit kit = Kit.of(name);
+                        complete.add(kit.getName());
+                    }
+                }
+                return new Result(true, complete, true);
+            }
+        });
+        subcommands.put("edit", context -> {
+            Player player = context.player();
+            String[] args = context.args();
+
+            if (context.command()) {
+                if (args.length < 2) {
+                    player.sendMessage(getMessage("noArgs"));
+                    return new Result(false, new ArrayList<>(), true);
+                }
+
+                Kit kit = Kit.of(args[1]);
+                new EditKitGUI(kit).open(player);
                 return new Result(true, new ArrayList<>(), true);
             } else {
                 List<String> complete = new ArrayList<>();

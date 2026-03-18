@@ -8,10 +8,12 @@ guis:
   KitPreviewGUI:
     name: "Kit preview"
     editItemName: "§fEdit kit"
+    backItemName: "§fBack"
   KitGUI:
     name: "Kits"
     previousArrow: "§fPrevious page"
     nextArrow: "§fNext page"
+    createKitItemName: "§aCreate new kit"
     iconLore:
       - "§5Left click to load"
       - "§5Right click to preview/edit"
@@ -26,9 +28,14 @@ guis:
     setContentMessage: "§eGet your kit into your inventory, then type \"done\""
     nameOrContentNotSet: "§cYou need to set the name and the content of your kit!"
     saved: "§aKit successfully saved!"
+    alreadyName: "§cA kit with this name already exists!"
   EditKitGUI:
     name: "Edit kit"
     saveItemName: "§aSave"
     resetItemName: "§4Reset kit"
+    backItemName: "§fBack §7(doesn't saves kit)"
+    success: "§aKit successfully edited!"
+    wrongContents: "§cThere's more or less of something in your kit. Please try again"
+    wrongArmor: "§cYou need to have either nothing or the actual armor piece in your armor slots!"
 data:
   kits: {}

@@ -4,14 +4,18 @@ import hu.jgj52.kitCats.Types.Kit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class KitPreviewGUI extends GUI {
     private final Kit kit;
+    private GUI back;
     public KitPreviewGUI(Kit kit) {
         this.kit = kit;
+    }
+    public KitPreviewGUI(Kit kit, GUI back) {
+        this.kit = kit;
+        this.back = back;
     }
 
     @Override
@@ -28,6 +32,11 @@ public class KitPreviewGUI extends GUI {
         editMeta.setDisplayName(getMessage("editItemName"));
         edit.setItemMeta(editMeta);
 
+        ItemStack back = new ItemStack(Material.ARROW);
+        ItemMeta backMeta = back.getItemMeta();
+        backMeta.setDisplayName(getMessage("backItemName"));
+        back.setItemMeta(backMeta);
+
         for (int i = 0; i < 54; i++) {
             if (i >= 2 && i <= 5) {
                 gui.setItem(i, contents[36 + (5 - i)]);
@@ -39,6 +48,8 @@ public class KitPreviewGUI extends GUI {
                 gui.setItem(i, contents[i - 45]);
             } else if (i == 8) {
                 gui.setItem(i, edit);
+            } else if (this.back != null && i == 0) {
+                gui.setItem(i, back);
             } else {
                 gui.setItem(i, inline);
             }
@@ -50,13 +61,10 @@ public class KitPreviewGUI extends GUI {
         event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getSlot() == 8) {
-            new EditKitGUI(kit).open(player);
+            new EditKitGUI(kit, this).open(player);
+        } else if (back != null && event.getSlot() == 0) {
+            back.open(player);
         }
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -49,6 +48,12 @@ public class KitGUI extends GUI {
         nextMeta.setDisplayName(getMessage("nextArrow"));
         next.setItemMeta(nextMeta);
 
+        ItemStack create = new ItemStack(Material.BOOK);
+        ItemMeta createMeta = create.getItemMeta();
+        createMeta.setDisplayName(getMessage("createKitItemName"));
+        create.setItemMeta(createMeta);
+
+        gui.setItem(4, create);
         gui.setItem(45, previous);
         gui.setItem(53, next);
     }
@@ -60,15 +65,17 @@ public class KitGUI extends GUI {
         if (event.getSlot() == 45) {
             if (page > 0) {
                 page--;
-                open(player);
+                init(player);
             }
         } else if (event.getSlot() == 53) {
             ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
             if (section == null) return;
             if ((section.getKeys(false).size() - 1) / 28 > page) {
                 page++;
-                open(player);
+                init(player);
             }
+        } else if (event.getSlot() == 4) {
+            new KitCreateGUI().open(player);
         } else {
             String name = event.getCurrentItem().getItemMeta().getDisplayName();
             if (name.startsWith("§f")) {
@@ -77,15 +84,10 @@ public class KitGUI extends GUI {
                 if (event.getClick().isLeftClick()) {
                     player.getInventory().setContents(kit.getContents(player));
                 } else if (event.getClick().isRightClick()) {
-                    new KitPreviewGUI(kit).open(player);
+                    new KitPreviewGUI(kit, this).open(player);
                 }
             }
         }
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-
     }
 
     @Override

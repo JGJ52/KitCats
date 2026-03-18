@@ -59,8 +59,15 @@ public class Kit {
                     is = is.clone();
                     ItemMeta im = is.getItemMeta();
                     im.getPersistentDataContainer().set(new NamespacedKey(plugin, "defaultSlot"), PersistentDataType.INTEGER, i);
+                    im.getPersistentDataContainer().set(new NamespacedKey(plugin, "kitName"), PersistentDataType.STRING, getName());
                     is.setItemMeta(im);
                     contents[i] = is;
+                }
+            }
+        } else {
+            for (int i = 0; i < contents.length; i++) {
+                if (contents[i] != null) {
+                    contents[i] = contents[i].clone();
                 }
             }
         }
@@ -99,12 +106,39 @@ public class Kit {
         save();
     }
 
-    public void setContents(ItemStack[] contents, Player player) {
+    public boolean setContents(ItemStack[] contents, Player player) {
+        int nulls = 0;
+        int notNulls = 0;
+        int dNulls = 0;
+        int dNotNulls = 0;
         Map<Integer, Integer> cont = new HashMap<>();
-        for (int i = 0; i < contents.length; i++) {
-            cont.put(i, contents[i] == null ? -1 : contents[i].getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "defaultSlot"), PersistentDataType.INTEGER));
+        ItemStack[] iss = getContents(true);
+        for (int i = 0; i < 41; i++) {
+            if (contents[i] == null) {
+                cont.put(i, -1);
+                nulls++;
+            } else {
+                if (getName().equals(contents[i].getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "kitName"), PersistentDataType.STRING))) {
+                    cont.put(i, contents[i].getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "defaultSlot"), PersistentDataType.INTEGER));
+                    notNulls++;
+                }
+            }
+            if (iss[i] == null) {
+                dNulls++;
+            } else {
+                if (getName().equals(iss[i].getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "kitName"), PersistentDataType.STRING))) {
+                    dNotNulls++;
+                }
+            }
         }
+        if (nulls != dNulls || notNulls != dNotNulls) return false;
         plugin.getConfig().set("data.kits." + name + ".player." + player.getUniqueId(), cont);
+        save();
+        return true;
+    }
+
+    public void removeContents(Player player) {
+        plugin.getConfig().set("data.kits." + name + ".player." + player.getUniqueId(), null);
         save();
     }
 }

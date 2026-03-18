@@ -3,11 +3,15 @@ package hu.jgj52.kitCats.GUIs;
 import hu.jgj52.kitCats.Listeners.ChatListener;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
@@ -52,7 +56,17 @@ public class KitCreateGUI extends GUI {
             player.closeInventory();
             player.sendMessage(getMessage("setNameMessage"));
             ChatListener.add(player, e -> {
-                name = PlainTextComponentSerializer.plainText().serialize(e.message());
+                List<String> names = new ArrayList<>();
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                if (section != null) {
+                    names.addAll(section.getKeys(false));
+                }
+                String name = PlainTextComponentSerializer.plainText().serialize(e.message());
+                if (names.contains(name)) {
+                    player.sendMessage(getMessage("alreadyName"));
+                } else {
+                    this.name = name;
+                }
                 open(player);
                 return true;
             });
@@ -91,11 +105,6 @@ public class KitCreateGUI extends GUI {
             player.sendMessage(getMessage("saved"));
             gui = null;
         }
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-
     }
 
     @Override

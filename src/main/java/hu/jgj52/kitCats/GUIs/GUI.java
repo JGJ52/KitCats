@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +59,11 @@ public abstract class GUI implements InventoryHolder {
 
     public abstract void init(Player player);
     public abstract void onClick(InventoryClickEvent event);
-    public abstract void onClose(InventoryCloseEvent event);
+    public void onBottomClick(InventoryClickEvent event) {}
+    public void onClose(InventoryCloseEvent event) {}
+    public void onDrop(PlayerDropItemEvent event) {}
+    public void onMove(PlayerMoveEvent event) {}
+    public void onInteract(PlayerInteractEvent event) {}
     public abstract int getSize();
     public String getName() {
         return getMessage("name");
