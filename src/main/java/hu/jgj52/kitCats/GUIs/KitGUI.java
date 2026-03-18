@@ -54,8 +54,12 @@ public class KitGUI extends GUI {
         create.setItemMeta(createMeta);
 
         gui.setItem(4, create);
-        gui.setItem(45, previous);
-        gui.setItem(53, next);
+        if (page > 0) {
+            gui.setItem(45, previous);
+        }
+        if (end > 28) {
+            gui.setItem(53, next);
+        }
     }
 
     @Override

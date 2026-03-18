@@ -16,14 +16,8 @@ import java.util.Map;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class Kit {
-    public static Map<String, Kit> kits = new HashMap<>();
     public static Kit of(String name) {
-        if (kits.containsKey(name)) {
-            return kits.get(name);
-        }
-        Kit kit = new Kit(name);
-        kits.put(name, kit);
-        return kit;
+        return new Kit(name);
     }
     public static void save() {
         plugin.saveConfig();

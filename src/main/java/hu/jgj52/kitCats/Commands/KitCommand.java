@@ -1,9 +1,6 @@
 package hu.jgj52.kitCats.Commands;
 
-import hu.jgj52.kitCats.GUIs.EditKitGUI;
-import hu.jgj52.kitCats.GUIs.KitCreateGUI;
-import hu.jgj52.kitCats.GUIs.KitGUI;
-import hu.jgj52.kitCats.GUIs.KitPreviewGUI;
+import hu.jgj52.kitCats.GUIs.*;
 import hu.jgj52.kitCats.Types.Kit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -118,6 +115,38 @@ public class KitCommand implements CommandExecutor, TabCompleter {
                 }
                 return new Result(true, complete, true);
             }
+        });
+        subcommands.put("delete", context -> {
+            Player player = context.player();
+            String[] args = context.args();
+
+            if (context.command()) {
+                if (args.length < 2) {
+                    player.sendMessage(getMessage("noArgs"));
+                    return new Result(false, new ArrayList<>(), true);
+                }
+
+                plugin.getConfig().set("data.kits." + args[1], null);
+                plugin.saveConfig();
+                plugin.reloadConfig();
+                return new Result(true, new ArrayList<>(), true);
+            } else {
+                List<String> complete = new ArrayList<>();
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                if (section != null) {
+                    for (String name : section.getKeys(false)) {
+                        Kit kit = Kit.of(name);
+                        complete.add(kit.getName());
+                    }
+                }
+                return new Result(true, complete, true);
+            }
+        });
+        subcommands.put("d", context -> {
+            if (context.command()) {
+                new CreateCustomKitGUI().open(context.player());
+            }
+           return new Result(true, new ArrayList<>(), true);
         });
     }
 

@@ -7,9 +7,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
+
 public class KitPreviewGUI extends GUI {
     private final Kit kit;
     private GUI back;
+    private boolean displayDefault = false;
     public KitPreviewGUI(Kit kit) {
         this.kit = kit;
     }
@@ -20,7 +23,7 @@ public class KitPreviewGUI extends GUI {
 
     @Override
     public void init(Player player) {
-        ItemStack[] contents = kit.getContents(player);
+        ItemStack[] contents = displayDefault ? kit.getContents() : kit.getContents(player);
 
         ItemStack inline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta inlineMeta = inline.getItemMeta();
@@ -37,6 +40,12 @@ public class KitPreviewGUI extends GUI {
         backMeta.setDisplayName(getMessage("backItemName"));
         back.setItemMeta(backMeta);
 
+        ItemStack displayDefault = new ItemStack(Material.TARGET);
+        ItemMeta displayDefaultMeta = displayDefault.getItemMeta();
+        displayDefaultMeta.setDisplayName(getMessage("displayDefaultItemName"));
+        displayDefaultMeta.setLore(List.of(getMessage(this.displayDefault ? "default" : "customized")));
+        displayDefault.setItemMeta(displayDefaultMeta);
+
         for (int i = 0; i < 54; i++) {
             if (i >= 2 && i <= 5) {
                 gui.setItem(i, contents[36 + (5 - i)]);
@@ -50,6 +59,8 @@ public class KitPreviewGUI extends GUI {
                 gui.setItem(i, edit);
             } else if (this.back != null && i == 0) {
                 gui.setItem(i, back);
+            } else if (i == 7) {
+                gui.setItem(i, displayDefault);
             } else {
                 gui.setItem(i, inline);
             }
@@ -64,6 +75,9 @@ public class KitPreviewGUI extends GUI {
             new EditKitGUI(kit, this).open(player);
         } else if (back != null && event.getSlot() == 0) {
             back.open(player);
+        } else if (event.getSlot() == 7) {
+            displayDefault = !displayDefault;
+            init(player);
         }
     }
 

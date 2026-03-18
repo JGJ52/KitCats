@@ -4,16 +4,26 @@ messages:
   noArgs: "§cNot enough args"
   kitCreated: "§aKit successfully created!"
   alreadyName: "§cA kit with this name already exists"
+customkits:
+  pages:
+    name: # the name of the page
+      icon: OAK_PLANKS # icon of the page
+      items: # list of items contained on the page. max 24/page
+        - DIAMOND_SWORD
+        - NETHERITE_SWORD
 guis:
   KitPreviewGUI:
     name: "Kit preview"
     editItemName: "§fEdit kit"
     backItemName: "§fBack"
+    displayDefaultItemName: "§fShould the default kit or your customized kit be displayed"
+    default: "§6Default"
+    customized: "§6Customized"
   KitGUI:
     name: "Kits"
     previousArrow: "§fPrevious page"
     nextArrow: "§fNext page"
-    createKitItemName: "§aCreate new kit"
+    createKitItemName: "§aCreate a new kit"
     iconLore:
       - "§5Left click to load"
       - "§5Right click to preview/edit"
@@ -37,5 +47,10 @@ guis:
     success: "§aKit successfully edited!"
     wrongContents: "§cThere's more or less of something in your kit. Please try again"
     wrongArmor: "§cYou need to have either nothing or the actual armor piece in your armor slots!"
+  CreateCustomKitGUI:
+    name: "Create a new custom kit"
+    pageScrollerBackItemName: "§fBack"
+    pageScrollerForwardItemName: "§fForward"
 data:
   kits: {}
+  customkits: {}
