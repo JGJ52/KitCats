@@ -51,6 +51,11 @@ guis:
     name: "Create a new custom kit"
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
+  EditItemGUI:
+    name: "Edit item"
+    backItemName: "§fBack"
+    enchantsItemName: "§6Enchant"
+    nameItemName: "§6Rename"
 data:
   kits: {}
   customkits: {}
