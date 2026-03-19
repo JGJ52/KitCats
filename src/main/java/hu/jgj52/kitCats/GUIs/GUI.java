@@ -37,6 +37,13 @@ public abstract class GUI implements InventoryHolder {
     }
 
     private void reGui(Player player) {
+        if (!defaultInit()) {
+            if (gui == null) {
+                gui = Bukkit.createInventory(this, getSize(), getName());
+            }
+            init(player);
+            return;
+        }
         gui = Bukkit.createInventory(this, getSize(), getName());
 
         ItemStack outline = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -57,6 +64,9 @@ public abstract class GUI implements InventoryHolder {
         init(player);
     }
 
+    public boolean defaultInit() {
+        return true;
+    }
     public abstract void init(Player player);
     public abstract void onClick(InventoryClickEvent event);
     public void onBottomClick(InventoryClickEvent event) {}

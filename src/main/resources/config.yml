@@ -47,7 +47,7 @@ guis:
     success: "§aKit successfully edited!"
     wrongContents: "§cThere's more or less of something in your kit. Please try again"
     wrongArmor: "§cYou need to have either nothing or the actual armor piece in your armor slots!"
-  CreateCustomKitGUI:
+  CustomKitEditorGUI:
     name: "Create a new custom kit"
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
@@ -56,6 +56,8 @@ guis:
     backItemName: "§fBack"
     enchantsItemName: "§6Enchant"
     nameItemName: "§6Rename"
+  EnchantItemGUI:
+    name: "Enchant item"
 data:
   kits: {}
   customkits: {}

@@ -161,4 +161,9 @@ public class EditKitGUI extends GUI {
     public int getSize() {
         return 54;
     }
+
+    @Override
+    public boolean defaultInit() {
+        return false;
+    }
 }

@@ -74,7 +74,7 @@ public class EditItemGUI extends GUI {
         } else if (item != null && item.getType() != Material.GRAY_STAINED_GLASS_PANE) {
             switch (event.getSlot()) {
                 case 14:
-                    //todo
+                    new EnchantItemGUI(this, this.item).open(player);
                     break;
                 case 23:
                     player.closeInventory();

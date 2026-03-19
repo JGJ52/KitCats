@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -19,7 +18,7 @@ import java.util.List;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
-public class CreateCustomKitGUI extends GUI {
+public class CustomKitEditorGUI extends GUI {
     private String currentPage;
     private boolean f = false;
     private boolean b = false;
@@ -54,9 +53,9 @@ public class CreateCustomKitGUI extends GUI {
         for (int i = 0; i < 54; i++) {
             if ((i + 2) % 9 == 0 || (i >= 36 && i <= 44)) {
                 gui.setItem(i, outline);
-            } else if (List.of(8, 17, 26, 35).contains(i)) {
-                gui.setItem(i, null);
-            } else gui.setItem(i, inline);
+            } else if (!List.of(8, 17, 26, 35).contains(i)) {
+                gui.setItem(i, inline);
+            }
         }
 
         if (pages.getKeys(false).size() > 7 && pageOffset + 6 != pages.getKeys(false).size()) {
@@ -112,7 +111,16 @@ public class CreateCustomKitGUI extends GUI {
 
     @Override
     public void onClick(InventoryClickEvent event) {
-        if (List.of(8, 17, 26, 35).contains(event.getSlot())) return;
+        if (List.of(8, 17, 26, 35).contains(event.getSlot())) {
+            if (!event.getClick().isShiftClick()) return;
+            if (!(event.getWhoClicked() instanceof Player player)) return;
+            ItemStack item = gui.getItem(event.getSlot());
+            if (item == null) return;
+            new EditItemGUI(this, item, player.getInventory().getContents()).open(player);
+            player.getInventory().clear();
+            event.setCancelled(true);
+            return;
+        }
         event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
         ItemStack item = gui.getItem(event.getSlot());
@@ -141,6 +149,7 @@ public class CreateCustomKitGUI extends GUI {
         if (!event.getClick().isShiftClick()) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
         ItemStack item = player.getInventory().getItem(event.getSlot());
+        if (item == null) return;
         new EditItemGUI(this, item, player.getInventory().getContents()).open(player);
         player.getInventory().clear();
     }
@@ -158,5 +167,10 @@ public class CreateCustomKitGUI extends GUI {
     @Override
     public int getSize() {
         return 54;
+    }
+
+    @Override
+    public boolean defaultInit() {
+        return false;
     }
 }
