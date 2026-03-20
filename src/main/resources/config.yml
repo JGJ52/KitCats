@@ -53,9 +53,11 @@ guis:
     pageScrollerForwardItemName: "§fForward"
   EditItemGUI:
     name: "Edit item"
+    setNameMessage: "§eType the name of the item to chat"
     backItemName: "§fBack"
     enchantsItemName: "§6Enchant"
     nameItemName: "§6Rename"
+    trimItemName: "§6Trim"
   EnchantItemGUI:
     name: "Enchant item"
 data:

@@ -3,6 +3,8 @@ version: '1.0'
 main: hu.jgj52.kitCats.KitCats
 api-version: '1.21'
 authors: [ JGJ52 ]
+softdepend:
+  - ViaVersion
 commands:
   kit:
     permission: kitcats.command.kit

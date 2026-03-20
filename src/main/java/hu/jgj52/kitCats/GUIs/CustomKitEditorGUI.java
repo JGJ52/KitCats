@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -111,19 +112,29 @@ public class CustomKitEditorGUI extends GUI {
 
     @Override
     public void onClick(InventoryClickEvent event) {
+        ItemStack item = gui.getItem(event.getSlot());
+        ItemStack cursor = event.getCursor();
         if (List.of(8, 17, 26, 35).contains(event.getSlot())) {
+            String end = switch (event.getSlot()) {
+                case 8 -> "_HELMET";
+                case 17 -> "_CHESTPLATE";
+                case 26 -> "_LEGGINGS";
+                case 35 -> "_BOOTS";
+                default -> "";
+            };
+            if (item == null && !cursor.getType().name().endsWith(end)) {
+                event.setCancelled(true);
+                return;
+            }
             if (!event.getClick().isShiftClick()) return;
             if (!(event.getWhoClicked() instanceof Player player)) return;
-            ItemStack item = gui.getItem(event.getSlot());
-            if (item == null) return;
-            new EditItemGUI(this, item, player.getInventory().getContents()).open(player);
+            new EditItemGUI(this, item, player.getInventory().getContents(), true).open(player);
             player.getInventory().clear();
             event.setCancelled(true);
             return;
         }
         event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        ItemStack item = gui.getItem(event.getSlot());
         if (event.getSlot() == 51 && f) {
             pageOffset++;
             init(player);
@@ -150,7 +161,14 @@ public class CustomKitEditorGUI extends GUI {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         ItemStack item = player.getInventory().getItem(event.getSlot());
         if (item == null) return;
-        new EditItemGUI(this, item, player.getInventory().getContents()).open(player);
+        boolean armor = false;
+        for (String end : List.of("_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS")) {
+            if (item.getType().name().endsWith(end)) {
+                armor = true;
+                break;
+            }
+        }
+        new EditItemGUI(this, item, player.getInventory().getContents(), armor).open(player);
         player.getInventory().clear();
     }
 
@@ -162,6 +180,26 @@ public class CustomKitEditorGUI extends GUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         event.getPlayer().getInventory().clear();
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent event) {
+        ItemStack cursor = event.getOldCursor();
+        for (int slot : event.getRawSlots()) {
+            ItemStack item = gui.getItem(slot);
+            if (List.of(8, 17, 26, 35).contains(slot)) {
+                String end = switch (slot) {
+                    case 8 -> "_HELMET";
+                    case 17 -> "_CHESTPLATE";
+                    case 26 -> "_LEGGINGS";
+                    case 35 -> "_BOOTS";
+                    default -> "";
+                };
+                if (item == null && !cursor.getType().name().endsWith(end)) {
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 
     @Override

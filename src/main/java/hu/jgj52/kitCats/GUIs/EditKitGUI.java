@@ -108,10 +108,10 @@ public class EditKitGUI extends GUI {
                 }
             }
             Map<Integer, String> map = Map.of(
-                    36, "BOOTS",
-                    37, "LEGGINGS",
-                    38, "CHESTPLATE",
-                    39, "HELMET"
+                    36, "_BOOTS",
+                    37, "_LEGGINGS",
+                    38, "_CHESTPLATE",
+                    39, "_HELMET"
             );
             for (int key : map.keySet()) {
                 if (contents[key] != null) {
