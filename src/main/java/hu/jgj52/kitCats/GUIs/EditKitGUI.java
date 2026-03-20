@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -83,6 +84,20 @@ public class EditKitGUI extends GUI {
         if (List.of(0, 1, 7, 8, 36, 37, 38, 39, 40, 41, 42, 43, 44).contains(event.getSlot())) {
             event.setCancelled(true);
         }
+        Map<Integer, String> map = Map.of(
+                5, "_BOOTS",
+                4, "_LEGGINGS",
+                3, "_CHESTPLATE",
+                2, "_HELMET"
+        );
+        if (map.containsKey(event.getSlot())) {
+            ItemStack cursor = event.getCursor();
+            ItemStack item = gui.getItem(event.getSlot());
+            if ((item != null && !item.getType().name().endsWith(map.get(event.getSlot()))) || (cursor.getType() != Material.AIR && !cursor.getType().name().endsWith(map.get(event.getSlot())))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getSlot() == 7) {
             kit.removeContents(player);
@@ -105,20 +120,6 @@ public class EditKitGUI extends GUI {
                     contents[36] = is;
                 } else if(i == 6) {
                     contents[40] = is;
-                }
-            }
-            Map<Integer, String> map = Map.of(
-                    36, "_BOOTS",
-                    37, "_LEGGINGS",
-                    38, "_CHESTPLATE",
-                    39, "_HELMET"
-            );
-            for (int key : map.keySet()) {
-                if (contents[key] != null) {
-                    if (!contents[key].getType().name().endsWith(map.get(key))) {
-                        player.sendMessage(getMessage("wrongArmor"));
-                        return;
-                    }
                 }
             }
             boolean success = kit.setContents(contents, player);
@@ -153,6 +154,25 @@ public class EditKitGUI extends GUI {
         for (ItemStack is : event.getPlayer().getInventory().getContents()) {
             if (is != null && kit.getName().equals(is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "kitName"), PersistentDataType.STRING))) {
                 event.getPlayer().getInventory().remove(is);
+            }
+        }
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent event) {
+        Map<Integer, String> map = Map.of(
+                5, "_BOOTS",
+                4, "_LEGGINGS",
+                3, "_CHESTPLATE",
+                2, "_HELMET"
+        );
+        for (int slot : event.getRawSlots()) {
+            if (map.containsKey(slot)) {
+                ItemStack cursor = event.getOldCursor();
+                if (!cursor.getType().name().endsWith(map.get(slot))) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
     }

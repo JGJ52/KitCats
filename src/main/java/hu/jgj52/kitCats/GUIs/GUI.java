@@ -21,6 +21,7 @@ import static hu.jgj52.kitCats.KitCats.plugin;
 
 public abstract class GUI implements InventoryHolder {
     protected Inventory gui;
+    private boolean firstInit = true;
     @Override
     public @NotNull Inventory getInventory() {
         return gui;
@@ -42,6 +43,10 @@ public abstract class GUI implements InventoryHolder {
             if (gui == null) {
                 gui = Bukkit.createInventory(this, getSize(), getName());
             }
+            if (firstInit) {
+                firstInit = false;
+                firstInit(player);
+            }
             init(player);
             return;
         }
@@ -62,12 +67,17 @@ public abstract class GUI implements InventoryHolder {
             else gui.setItem(i, inline);
         }
 
+        if (firstInit) {
+            firstInit = false;
+            firstInit(player);
+        }
         init(player);
     }
 
     public boolean defaultInit() {
         return true;
     }
+    public void firstInit(Player player) {}
     public abstract void init(Player player);
     public abstract void onClick(InventoryClickEvent event);
     public void onBottomClick(InventoryClickEvent event) {}

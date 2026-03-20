@@ -111,6 +111,11 @@ public class CustomKitEditorGUI extends GUI {
     }
 
     @Override
+    public void firstInit(Player player) {
+        player.getInventory().clear();
+    }
+
+    @Override
     public void onClick(InventoryClickEvent event) {
         ItemStack item = gui.getItem(event.getSlot());
         ItemStack cursor = event.getCursor();
@@ -122,7 +127,7 @@ public class CustomKitEditorGUI extends GUI {
                 case 35 -> "_BOOTS";
                 default -> "";
             };
-            if (item == null && !cursor.getType().name().endsWith(end)) {
+            if ((item != null && !item.getType().name().endsWith(end)) || (cursor.getType() != Material.AIR && !cursor.getType().name().endsWith(end))) {
                 event.setCancelled(true);
                 return;
             }

@@ -6,9 +6,9 @@ import hu.jgj52.kitCats.Listeners.ChatListener;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -70,6 +70,14 @@ public class EditItemGUI extends GUI {
             trim.setItemMeta(trimMeta);
         }
 
+        boolean enchantable = false;
+        for (Enchantment enchantment : Enchantment.values()) {
+            if (enchantment.canEnchantItem(this.item)) {
+                enchantable = true;
+                break;
+            }
+        }
+
         for (int i = 0; i < 27; i++) {
             if (List.of(0, 1, 2, 9, 11, 18, 19, 20).contains(i)) {
                 gui.setItem(i, blue);
@@ -77,11 +85,11 @@ public class EditItemGUI extends GUI {
                 gui.setItem(i, item);
             } else if (i == 8) {
                 gui.setItem(i, back);
-            } else if (i == 14 && player.hasPermission("kitcats.customkits.enchant")) {
+            } else if (i == 23 && enchantable && player.hasPermission("kitcats.customkits.enchant")) {
                 gui.setItem(i, enchants);
-            } else if(i == 23 && player.hasPermission("kitcats.customkits.name")) {
+            } else if(i == 14 && player.hasPermission("kitcats.customkits.name")) {
                 gui.setItem(i, name);
-            } else if (i == 5 && armor) {
+            } else if (i == 5 && armor && player.hasPermission("kitcats.customkits.trim")) {
                 gui.setItem(i, trim);
             }
             else gui.setItem(i, inline);
@@ -99,14 +107,9 @@ public class EditItemGUI extends GUI {
         } else if (item != null && item.getType() != Material.GRAY_STAINED_GLASS_PANE) {
             switch (event.getSlot()) {
                 case 5:
-                    if (armor) {
-                        new TrimArmorGUI(this, this.item).open(player);
-                    }
+                    new TrimArmorGUI(this, this.item).open(player);
                     break;
                 case 14:
-                    new EnchantItemGUI(this, this.item).open(player);
-                    break;
-                case 23:
                     player.closeInventory();
                     player.sendMessage(getMessage("setNameMessage"));
                     ChatListener.add(player, e -> {
@@ -117,8 +120,16 @@ public class EditItemGUI extends GUI {
                         return true;
                     });
                     break;
+                case 23:
+                    new EnchantItemGUI(this, this.item).open(player);
+                    break;
             }
         }
+    }
+
+    @Override
+    public boolean defaultInit() {
+        return false;
     }
 
     @Override
