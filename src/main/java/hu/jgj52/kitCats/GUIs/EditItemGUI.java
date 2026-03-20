@@ -3,6 +3,7 @@ package hu.jgj52.kitCats.GUIs;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import hu.jgj52.kitCats.Listeners.ChatListener;
+import hu.jgj52.kitCats.Types.Trim;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,7 +11,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class EditItemGUI extends GUI {
     private final ItemStack item;
     private final ItemStack[] inv;
     private final boolean armor;
+    private final Trim trim = new Trim(null, null);
     public EditItemGUI(GUI back, ItemStack item, ItemStack[] inv, boolean armor) {
         this.back = back;
         this.item = item;
@@ -55,20 +59,32 @@ public class EditItemGUI extends GUI {
         nameMeta.setDisplayName(getMessage("nameItemName"));
         name.setItemMeta(nameMeta);
 
+        if (trim.trim() != null) {
+            ArmorMeta am = (ArmorMeta) item.getItemMeta();
+            am.setTrim(trim.trim());
+            item.setItemMeta(am);
+        }
+
         ItemStack trim;
 
+        Material trimType = this.trim.getPattern() == null ? Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE : this.trim.getPattern();
         if (viaversion && Via.getAPI().getPlayerProtocolVersion(player.getUniqueId()).newerThanOrEqualTo(ProtocolVersion.v1_21_2) && Via.getAPI().getServerVersion().highestSupportedProtocolVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
             trim = new ItemStack(Material.PAPER);
             ItemMeta trimMeta = trim.getItemMeta();
             trimMeta.setDisplayName(getMessage("trimItemName"));
-            trimMeta.setItemModel(new NamespacedKey("minecraft", "netherite_upgrade_smithing_template"));
+            trimMeta.setItemModel(new NamespacedKey("minecraft", trimType.name().toLowerCase()));
             trim.setItemMeta(trimMeta);
         } else {
-            trim = new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
+            trim = new ItemStack(trimType);
             ItemMeta trimMeta = trim.getItemMeta();
             trimMeta.setDisplayName(getMessage("trimItemName"));
             trim.setItemMeta(trimMeta);
         }
+
+        ItemStack trimMaterial = new ItemStack(this.trim.getMaterial() == null ? Material.RAW_IRON : this.trim.getMaterial());
+        ItemMeta trimMaterialMeta = trim.getItemMeta();
+        trimMaterialMeta.setDisplayName(getMessage("trimMaterialItemName"));
+        trimMaterial.setItemMeta(trimMaterialMeta);
 
         boolean enchantable = false;
         for (Enchantment enchantment : Enchantment.values()) {
@@ -91,6 +107,8 @@ public class EditItemGUI extends GUI {
                 gui.setItem(i, name);
             } else if (i == 5 && armor && player.hasPermission("kitcats.customkits.trim")) {
                 gui.setItem(i, trim);
+            } else if (i == 6 && armor && player.hasPermission("kitcats.customkits.trim")) {
+                gui.setItem(i, trimMaterial);
             }
             else gui.setItem(i, inline);
         }
@@ -107,7 +125,10 @@ public class EditItemGUI extends GUI {
         } else if (item != null && item.getType() != Material.GRAY_STAINED_GLASS_PANE) {
             switch (event.getSlot()) {
                 case 5:
-                    new TrimArmorGUI(this, this.item).open(player);
+                    new TrimPatternArmorGUI(this, this.item, trim).open(player);
+                    break;
+                case 6:
+                    new TrimMaterialArmorGUI(this, this.item, trim).open(player);
                     break;
                 case 14:
                     player.closeInventory();

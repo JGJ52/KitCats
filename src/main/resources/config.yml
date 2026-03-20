@@ -57,9 +57,16 @@ guis:
     backItemName: "§fBack"
     enchantsItemName: "§6Enchant"
     nameItemName: "§6Rename"
-    trimItemName: "§6Trim"
+    trimItemName: "§6Trim Pattern"
+    trimMaterialItemName: "§6Trim Material"
   EnchantItemGUI:
     name: "Enchant item"
+  TrimMaterialArmorGUI:
+    name: "Set trim material"
+    backItemName: "§fBack"
+  TrimPatternArmorGUI:
+    name: "Set trim pattern"
+    backItemName: "§fBack"
 data:
   kits: {}
   customkits: {}
