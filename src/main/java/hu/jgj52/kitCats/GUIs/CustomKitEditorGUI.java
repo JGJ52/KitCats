@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.CustomKit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -23,9 +24,21 @@ import static hu.jgj52.kitCats.KitCats.plugin;
 public class CustomKitEditorGUI extends GUI {
     private final GUI back;
     private final ItemStack[] contents;
+    private final CustomKit kit;
     public CustomKitEditorGUI(GUI back, ItemStack[] contents) {
         this.back = back;
         this.contents = contents;
+        this.kit = null;
+    }
+    public CustomKitEditorGUI(GUI back, CustomKit kit) {
+        this.back = back;
+        this.contents = null;
+        this.kit = kit;
+    }
+    public CustomKitEditorGUI(CustomKit kit) {
+        this.back = null;
+        this.contents = null;
+        this.kit = kit;
     }
     private String currentPage;
     private boolean f = false;
@@ -58,9 +71,14 @@ public class CustomKitEditorGUI extends GUI {
         forwardMeta.setDisplayName(getMessage("pageScrollerForwardItemName"));
         forward.setItemMeta(forwardMeta);
 
-        ItemStack save = new ItemStack(Material.ARROW);
+        ItemStack saveBack = new ItemStack(Material.ARROW);
+        ItemMeta saveBackMeta = saveBack.getItemMeta();
+        saveBackMeta.setDisplayName(getMessage("backItemName"));
+        saveBack.setItemMeta(saveBackMeta);
+
+        ItemStack save = new ItemStack(Material.LIME_CONCRETE);
         ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("backItemName"));
+        saveMeta.setDisplayName(getMessage("saveItemName"));
         save.setItemMeta(saveMeta);
 
         for (int i = 0; i < 54; i++) {
@@ -69,7 +87,7 @@ public class CustomKitEditorGUI extends GUI {
             } else if (!List.of(8, 17, 26, 35).contains(i)) {
                 gui.setItem(i, inline);
             } else if (i == 53) {
-                gui.setItem(i, save);
+                gui.setItem(i, kit == null ? saveBack : save);
             }
         }
 
@@ -171,7 +189,7 @@ public class CustomKitEditorGUI extends GUI {
                 ItemStack is = new ItemStack(item.getType(), item.getType().getMaxStackSize());
                 player.setItemOnCursor(is);
             }
-        } else if (event.getSlot() == 53) {
+        } else if (event.getSlot() == 53 && contents != null) {
             Map<Integer, Integer> armors = Map.of(
                     39, 8,
                     38, 17,
@@ -186,7 +204,30 @@ public class CustomKitEditorGUI extends GUI {
                 contents[i] = player.getInventory().getContents()[i];
             }
 
-            back.open(player);
+            if (back != null) { // i know its never null here but i hate when idea is crying
+                back.open(player);
+            }
+        } else if (event.getSlot() == 53 && kit != null) {
+            ItemStack[] contents = new ItemStack[41];
+            Map<Integer, Integer> armors = Map.of(
+                    39, 8,
+                    38, 17,
+                    37, 26,
+                    36, 35
+            );
+            for (int i = 0; i < contents.length; i++) {
+                if (armors.containsKey(i)) {
+                    contents[i] = gui.getItem(armors.get(i));
+                    continue;
+                }
+                contents[i] = player.getInventory().getContents()[i];
+            }
+            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + kit.getName() + ".contents", contents);
+            plugin.saveConfig();
+            plugin.reloadConfig();
+            if (back != null) {
+                back.open(player);
+            }
         }
     }
 

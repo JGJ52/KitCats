@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats;
 
+import hu.jgj52.kitCats.Commands.CustomKitCommand;
 import hu.jgj52.kitCats.Commands.KitCommand;
 import hu.jgj52.kitCats.Listeners.ChatListener;
 import hu.jgj52.kitCats.Listeners.GUIListener;
@@ -20,6 +21,7 @@ public final class KitCats extends JavaPlugin {
         saveConfig();
 
         getCommand("kit").setExecutor(new KitCommand());
+        getCommand("customkit").setExecutor(new CustomKitCommand());
 
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);

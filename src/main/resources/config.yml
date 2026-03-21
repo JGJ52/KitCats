@@ -48,7 +48,7 @@ guis:
     wrongContents: "§cThere's more or less of something in your kit. Please try again"
     wrongArmor: "§cYou need to have either nothing or the actual armor piece in your armor slots!"
   CustomKitEditorGUI:
-    name: "Create a new custom kit"
+    name: "Custom kit editor"
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
     backItemName: "§fBack"
@@ -79,6 +79,18 @@ guis:
     nameOrContentNotSet: "§cYou need to set the name of your kit!"
     saved: "§aKit successfully saved!"
     alreadyName: "§cA kit with this name already exists!"
+  CustomKitPreviewGUI:
+    name: "Custom kit preview"
+    editItemName: "§fEdit custom kit"
+    backItemName: "§fBack"
+  CustomKitGUI:
+    name: "Custom kits"
+    previousArrow: "§fPrevious page"
+    nextArrow: "§fNext page"
+    createKitItemName: "§aCreate a new custom kit"
+    iconLore:
+      - "§5Left click to load"
+      - "§5Right click to preview/edit"
 data:
   kits: {}
   customkits: {}

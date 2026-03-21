@@ -1,7 +1,7 @@
 package hu.jgj52.kitCats.Commands;
 
 import hu.jgj52.kitCats.GUIs.*;
-import hu.jgj52.kitCats.Types.Kit;
+import hu.jgj52.kitCats.Types.CustomKit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
-public class KitCommand implements CommandExecutor, TabCompleter {
+public class CustomKitCommand implements CommandExecutor, TabCompleter {
     private final Map<String, Function<Context, Result>> subcommands = new HashMap<>();
 
     private record Context (Boolean command, Player player, String[] args) {}
@@ -29,42 +29,42 @@ public class KitCommand implements CommandExecutor, TabCompleter {
         return msg.replaceAll("%player%", player.getName());
     }
 
-    public KitCommand() {
+    public CustomKitCommand() {
         subcommands.put("create", context -> {
-           Player player = context.player();
+            Player player = context.player();
 
-           if (context.command()) {
-               new KitCreateGUI().open(player);
+            if (context.command()) {
+                new CustomKitCreateGUI().open(player);
 
-               return new Result(true, new ArrayList<>(), true);
-           } else {
-               return new Result(true, new ArrayList<>(List.of("")), true);
-           }
+                return new Result(true, new ArrayList<>(), true);
+            } else {
+                return new Result(true, new ArrayList<>(List.of("")), true);
+            }
         });
         subcommands.put("load", context -> {
-           Player player = context.player();
-           String[] args = context.args();
+            Player player = context.player();
+            String[] args = context.args();
 
-           if (context.command()) {
-               if (args.length < 2) {
-                   player.sendMessage(getMessage("noArgs"));
-                   return new Result(false, new ArrayList<>(), true);
-               }
+            if (context.command()) {
+                if (args.length < 2) {
+                    player.sendMessage(getMessage("noArgs"));
+                    return new Result(false, new ArrayList<>(), true);
+                }
 
-               Kit kit = Kit.of(args[1]);
-               player.getInventory().setContents(kit.getContents(player));
-               return new Result(true, new ArrayList<>(), true);
-           } else {
-               List<String> complete = new ArrayList<>();
-               ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
-               if (section != null) {
-                   for (String name : section.getKeys(false)) {
-                       Kit kit = Kit.of(name);
-                       complete.add(kit.getName());
-                   }
-               }
-               return new Result(true, complete, true);
-           }
+                CustomKit kit = CustomKit.of(args[1], player);
+                player.getInventory().setContents(kit.getContents());
+                return new Result(true, new ArrayList<>(), true);
+            } else {
+                List<String> complete = new ArrayList<>();
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
+                if (section != null) {
+                    for (String name : section.getKeys(false)) {
+                        CustomKit kit = CustomKit.of(name, player);
+                        complete.add(kit.getName());
+                    }
+                }
+                return new Result(true, complete, true);
+            }
         });
         subcommands.put("preview", context -> {
             Player player = context.player();
@@ -76,15 +76,15 @@ public class KitCommand implements CommandExecutor, TabCompleter {
                     return new Result(false, new ArrayList<>(), true);
                 }
 
-                Kit kit = Kit.of(args[1]);
-                new KitPreviewGUI(kit).open(player);
+                CustomKit kit = CustomKit.of(args[1], player);
+                new CustomKitPreviewGUI(kit).open(player);
                 return new Result(true, new ArrayList<>(), true);
             } else {
                 List<String> complete = new ArrayList<>();
-                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
                 if (section != null) {
                     for (String name : section.getKeys(false)) {
-                        Kit kit = Kit.of(name);
+                        CustomKit kit = CustomKit.of(name, player);
                         complete.add(kit.getName());
                     }
                 }
@@ -101,15 +101,15 @@ public class KitCommand implements CommandExecutor, TabCompleter {
                     return new Result(false, new ArrayList<>(), true);
                 }
 
-                Kit kit = Kit.of(args[1]);
-                new EditKitGUI(kit).open(player);
+                CustomKit kit = CustomKit.of(args[1], player);
+                new CustomKitEditorGUI(kit).open(player);
                 return new Result(true, new ArrayList<>(), true);
             } else {
                 List<String> complete = new ArrayList<>();
-                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
                 if (section != null) {
                     for (String name : section.getKeys(false)) {
-                        Kit kit = Kit.of(name);
+                        CustomKit kit = CustomKit.of(name, player);
                         complete.add(kit.getName());
                     }
                 }
@@ -126,16 +126,16 @@ public class KitCommand implements CommandExecutor, TabCompleter {
                     return new Result(false, new ArrayList<>(), true);
                 }
 
-                plugin.getConfig().set("data.kits." + args[1], null);
+                plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + args[1], null);
                 plugin.saveConfig();
                 plugin.reloadConfig();
                 return new Result(true, new ArrayList<>(), true);
             } else {
                 List<String> complete = new ArrayList<>();
-                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
                 if (section != null) {
                     for (String name : section.getKeys(false)) {
-                        Kit kit = Kit.of(name);
+                        CustomKit kit = CustomKit.of(name, player);
                         complete.add(kit.getName());
                     }
                 }
@@ -154,14 +154,14 @@ public class KitCommand implements CommandExecutor, TabCompleter {
         if (args.length > 0) {
             for (String subcommand : subcommands.keySet()) {
                 if (subcommand.equals(args[0])) {
-                    if (sender.hasPermission("kitcats.command.kit." + subcommand)) {
+                    if (sender.hasPermission("kitcats.command.customkit." + subcommand)) {
                         Result result = subcommands.get(subcommand).apply(new Context(true, player, args));
                         return result.returnValue();
                     }
                 }
             }
         } else {
-            new KitGUI().open(player);
+            new CustomKitGUI().open(player);
         }
         return true;
     }
@@ -172,7 +172,7 @@ public class KitCommand implements CommandExecutor, TabCompleter {
         List<String> complete = new ArrayList<>();
         if (args.length == 1) {
             for (String subcommand : subcommands.keySet()) {
-                if (sender.hasPermission("kitcats.command.kit." + subcommand)) {
+                if (sender.hasPermission("kitcats.command.customkit." + subcommand)) {
                     Result result = subcommands.get(subcommand).apply(new Context(false, player, args));
                     if (result.canRun()) {
                         complete.add(subcommand);
@@ -182,7 +182,7 @@ public class KitCommand implements CommandExecutor, TabCompleter {
         } else if (args.length == 2) {
             for (String subcommand : subcommands.keySet()) {
                 if (args[0].equals(subcommand)) {
-                    if (sender.hasPermission("kitcats.command.kit." + subcommand)) {
+                    if (sender.hasPermission("kitcats.command.customkit." + subcommand)) {
                         Result result = subcommands.get(subcommand).apply(new Context(false, player, args));
                         if (result.canRun()) {
                             return result.tabComplete();

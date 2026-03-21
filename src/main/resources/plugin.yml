@@ -8,3 +8,5 @@ softdepend:
 commands:
   kit:
     permission: kitcats.command.kit
+  customkit:
+    permission: kitcats.command.customkit
