@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -22,6 +23,12 @@ public class TrimMaterialArmorGUI extends GUI {
 
     @Override
     public void init(Player player) {
+        if (trim.trim() != null) {
+            ArmorMeta am = (ArmorMeta) item.getItemMeta();
+            am.setTrim(trim.trim());
+            item.setItemMeta(am);
+        }
+
         ItemStack blue = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         ItemMeta blueMeta = blue.getItemMeta();
         blueMeta.setHideTooltip(true);
@@ -49,7 +56,7 @@ public class TrimMaterialArmorGUI extends GUI {
             }
         }
 
-        int slot = 10;
+        int slot = 28;
         for (Material template : Trim.materials()) {
             ItemStack is = new ItemStack(template);
             if (current != null && current == template) {
@@ -57,7 +64,7 @@ public class TrimMaterialArmorGUI extends GUI {
                 im.setEnchantmentGlintOverride(true);
                 is.setItemMeta(im);
             }
-            gui.setItem(slot, new ItemStack(template));
+            gui.setItem(slot, is);
             slot++;
             if ((slot + 1) % 9 == 0) slot += 2;
         }

@@ -52,6 +52,7 @@ guis:
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
     backItemName: "§fBack"
+    saveItemName: "§aSave"
   EditItemGUI:
     name: "Edit item"
     setNameMessage: "§eType the name of the item to chat"

@@ -82,7 +82,7 @@ public class EditItemGUI extends GUI {
         }
 
         ItemStack trimMaterial = new ItemStack(this.trim.getMaterial() == null ? Material.RAW_IRON : this.trim.getMaterial());
-        ItemMeta trimMaterialMeta = trim.getItemMeta();
+        ItemMeta trimMaterialMeta = trimMaterial.getItemMeta();
         trimMaterialMeta.setDisplayName(getMessage("trimMaterialItemName"));
         trimMaterial.setItemMeta(trimMaterialMeta);
 

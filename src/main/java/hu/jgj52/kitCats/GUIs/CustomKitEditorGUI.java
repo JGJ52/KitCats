@@ -84,7 +84,7 @@ public class CustomKitEditorGUI extends GUI {
         for (int i = 0; i < 54; i++) {
             if ((i + 2) % 9 == 0 || (i >= 36 && i <= 44)) {
                 gui.setItem(i, outline);
-            } else if (!List.of(8, 17, 26, 35).contains(i)) {
+            } else if (!List.of(8, 17, 26, 35, 53).contains(i)) {
                 gui.setItem(i, inline);
             } else if (i == 53) {
                 gui.setItem(i, kit == null ? saveBack : save);
@@ -145,6 +145,25 @@ public class CustomKitEditorGUI extends GUI {
     @Override
     public void firstInit(Player player) {
         player.getInventory().clear();
+        ItemStack[] contents = new ItemStack[0];
+        if (this.contents != null) {
+            contents = this.contents;
+        } else if (kit != null) {
+            contents = kit.getContents();
+        }
+        Map<Integer, Integer> map = Map.of(
+                39, 8,
+                38, 17,
+                37, 26,
+                36, 35
+        );
+        for (int i = 0; i < contents.length; i++) {
+            if (map.containsKey(i)) {
+                gui.setItem(map.get(i), contents[i]);
+            } else {
+                player.getInventory().setItem(i, contents[i]);
+            }
+        }
     }
 
     @Override

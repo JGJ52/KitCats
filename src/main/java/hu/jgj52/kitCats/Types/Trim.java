@@ -63,7 +63,7 @@ public class Trim {
             case Material.COPPER_INGOT -> TrimMaterial.COPPER;
             case Material.IRON_INGOT -> TrimMaterial.IRON;
             case Material.RESIN_BRICK -> TrimMaterial.RESIN;
-            case Material.REDSTONE_WIRE -> TrimMaterial.REDSTONE;
+            case Material.REDSTONE -> TrimMaterial.REDSTONE;
             case Material.LAPIS_LAZULI -> TrimMaterial.LAPIS;
             case Material.EMERALD -> TrimMaterial.EMERALD;
             case Material.AMETHYST_SHARD -> TrimMaterial.AMETHYST;
@@ -85,7 +85,7 @@ public class Trim {
                 Material.COPPER_INGOT,
                 Material.IRON_INGOT,
                 Material.RESIN_BRICK,
-                Material.REDSTONE_WIRE,
+                Material.REDSTONE,
                 Material.LAPIS_LAZULI,
                 Material.EMERALD,
                 Material.AMETHYST_SHARD,
