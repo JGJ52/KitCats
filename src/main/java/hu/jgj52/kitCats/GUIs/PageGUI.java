@@ -152,6 +152,7 @@ public class PageGUI extends GUI {
                 inlineMeta.setHideTooltip(true);
                 inline.setItemMeta(inlineMeta);
                 boolean n = false;
+                cursor = new ItemStack(cursor.getType());
                 if (cursor.getType() == Material.AIR) {
                     cursor = inline;
                     n = true;
@@ -175,7 +176,7 @@ public class PageGUI extends GUI {
             }
         }
         if (event.getSlot() == 53) {
-            // this to save's getter is very bad but i dont wanna make a class for it
+            // this toSave's getter is very bad but i dont wanna make a class for it
             for (String key : toSave.keySet()) {
                 plugin.getConfig().set(key, toSave.get(key));
             }

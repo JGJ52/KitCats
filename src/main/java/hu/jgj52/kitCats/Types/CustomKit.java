@@ -1,9 +1,11 @@
 package hu.jgj52.kitCats.Types;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
@@ -12,9 +14,19 @@ public class CustomKit {
     public static CustomKit of(String name, Player player) {
         return new CustomKit(name, player);
     }
-    public static void save() {
+    private static void save() {
         plugin.saveConfig();
         plugin.reloadConfig();
+    }
+
+    public static List<CustomKit> all(Player player) {
+        ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
+        List<CustomKit> list = new ArrayList<>();
+        if (section == null) return list;
+        for (String name : section.getKeys(false)) {
+            list.add(of(name, player));
+        }
+        return list;
     }
 
     private final String name;

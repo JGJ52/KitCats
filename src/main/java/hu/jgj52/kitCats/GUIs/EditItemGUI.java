@@ -13,7 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.trim.ArmorTrim;
 
 import java.util.List;
 
@@ -25,11 +24,13 @@ public class EditItemGUI extends GUI {
     private final ItemStack[] inv;
     private final boolean armor;
     private final Trim trim = new Trim(null, null);
+    private final boolean potion;
     public EditItemGUI(GUI back, ItemStack item, ItemStack[] inv, boolean armor) {
         this.back = back;
         this.item = item;
         this.inv = inv;
         this.armor = armor;
+        potion = item.getType().name().endsWith("POTION");
     }
 
     @Override
@@ -59,6 +60,10 @@ public class EditItemGUI extends GUI {
         nameMeta.setDisplayName(getMessage("nameItemName"));
         name.setItemMeta(nameMeta);
 
+        ItemStack effect = new ItemStack(Material.NETHER_WART);
+        ItemMeta effectMeta = effect.getItemMeta();
+        effectMeta.setDisplayName(getMessage("effectItemName"));
+
         if (trim.trim() != null) {
             ArmorMeta am = (ArmorMeta) item.getItemMeta();
             am.setTrim(trim.trim());
@@ -71,13 +76,13 @@ public class EditItemGUI extends GUI {
         if (viaversion && Via.getAPI().getPlayerProtocolVersion(player.getUniqueId()).newerThanOrEqualTo(ProtocolVersion.v1_21_2) && Via.getAPI().getServerVersion().highestSupportedProtocolVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
             trim = new ItemStack(Material.PAPER);
             ItemMeta trimMeta = trim.getItemMeta();
-            trimMeta.setDisplayName(getMessage("trimItemName"));
+            trimMeta.setDisplayName(getMessage("trimPatternItemName"));
             trimMeta.setItemModel(new NamespacedKey("minecraft", trimType.name().toLowerCase()));
             trim.setItemMeta(trimMeta);
         } else {
             trim = new ItemStack(trimType);
             ItemMeta trimMeta = trim.getItemMeta();
-            trimMeta.setDisplayName(getMessage("trimItemName"));
+            trimMeta.setDisplayName(getMessage("trimPatternItemName"));
             trim.setItemMeta(trimMeta);
         }
 
@@ -109,6 +114,8 @@ public class EditItemGUI extends GUI {
                 gui.setItem(i, trim);
             } else if (i == 6 && armor && player.hasPermission("kitcats.customkits.trim")) {
                 gui.setItem(i, trimMaterial);
+            } else if (i == 24 && potion && player.hasPermission("kitcats.customkits.potion")) {
+                gui.setItem(i, effect);
             }
             else gui.setItem(i, inline);
         }
@@ -143,6 +150,9 @@ public class EditItemGUI extends GUI {
                     break;
                 case 23:
                     new EnchantItemGUI(this, this.item).open(player);
+                    break;
+                case 24:
+                    new PotionItemGUI(this, this.item).open(player);
                     break;
             }
         }

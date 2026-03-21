@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,19 @@ public class Kit {
     public static Kit of(String name) {
         return new Kit(name);
     }
-    public static void save() {
+    private static void save() {
         plugin.saveConfig();
         plugin.reloadConfig();
+    }
+
+    public static List<Kit> all() {
+        ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+        List<Kit> list = new ArrayList<>();
+        if (section == null) return list;
+        for (String name : section.getKeys(false)) {
+            list.add(of(name));
+        }
+        return list;
     }
 
     private final String name;

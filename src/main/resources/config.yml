@@ -59,8 +59,9 @@ guis:
     backItemName: "§fBack"
     enchantsItemName: "§6Enchant"
     nameItemName: "§6Rename"
-    trimItemName: "§6Trim Pattern"
+    trimPatternItemName: "§6Trim Pattern"
     trimMaterialItemName: "§6Trim Material"
+    effectItemName: "§6Effects"
   EnchantItemGUI:
     name: "Enchant item"
   TrimMaterialArmorGUI:
