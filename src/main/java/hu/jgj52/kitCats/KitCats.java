@@ -2,6 +2,7 @@ package hu.jgj52.kitCats;
 
 import hu.jgj52.kitCats.Commands.CustomKitCommand;
 import hu.jgj52.kitCats.Commands.KitCommand;
+import hu.jgj52.kitCats.Commands.PageCommand;
 import hu.jgj52.kitCats.Listeners.ChatListener;
 import hu.jgj52.kitCats.Listeners.GUIListener;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ public final class KitCats extends JavaPlugin {
 
         getCommand("kit").setExecutor(new KitCommand());
         getCommand("customkit").setExecutor(new CustomKitCommand());
+        getCommand("page").setExecutor(new PageCommand());
 
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);

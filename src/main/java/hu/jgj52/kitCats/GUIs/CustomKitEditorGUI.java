@@ -129,12 +129,15 @@ public class CustomKitEditorGUI extends GUI {
             for (String m : page.getStringList("items")) {
                 if (i > 33) break;
                 Material material = Material.matchMaterial(m);
-                if (material == null) continue;
-                ItemStack is = new ItemStack(material, material.getMaxStackSize());
-                ItemMeta im = is.getItemMeta();
-                im.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
-                is.setItemMeta(im);
-
+                ItemStack is;
+                if (material == null) {
+                    is = inline;
+                } else {
+                    is = new ItemStack(material, material.getMaxStackSize());
+                    ItemMeta im = is.getItemMeta();
+                    im.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
+                    is.setItemMeta(im);
+                }
                 gui.setItem(i, is);
                 i++;
                 if ((i + 2) % 9 == 0) i += 2;
