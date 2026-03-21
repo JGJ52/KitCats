@@ -142,12 +142,6 @@ public class KitCommand implements CommandExecutor, TabCompleter {
                 return new Result(true, complete, true);
             }
         });
-        subcommands.put("d", context -> {
-            if (context.command()) {
-                new CustomKitEditorGUI().open(context.player());
-            }
-           return new Result(true, new ArrayList<>(), true);
-        });
     }
 
     @Override

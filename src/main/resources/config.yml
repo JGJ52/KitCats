@@ -43,7 +43,7 @@ guis:
     name: "Edit kit"
     saveItemName: "§aSave"
     resetItemName: "§4Reset kit"
-    backItemName: "§fBack §7(doesn't saves kit)"
+    backItemName: "§fBack §7(doesn't save kit)"
     success: "§aKit successfully edited!"
     wrongContents: "§cThere's more or less of something in your kit. Please try again"
     wrongArmor: "§cYou need to have either nothing or the actual armor piece in your armor slots!"
@@ -51,6 +51,7 @@ guis:
     name: "Create a new custom kit"
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
+    backItemName: "§fBack"
   EditItemGUI:
     name: "Edit item"
     setNameMessage: "§eType the name of the item to chat"
@@ -67,6 +68,17 @@ guis:
   TrimPatternArmorGUI:
     name: "Set trim pattern"
     backItemName: "§fBack"
+  CustomKitCreateGUI:
+    name: "Create custom kit"
+    setNameItemName: "§fClick this to set the name of your kit"
+    setIconItemName: "§fClick this to set the icon of your kit"
+    setContentItemName: "§fClick this to set the content of your kit"
+    saveItemName: "§fClick this to save your kit"
+    setNameMessage: "§eType the name of your kit to the chat"
+    setIconMessage: "§eHold the item you want as icon and type \"done\""
+    nameOrContentNotSet: "§cYou need to set the name of your kit!"
+    saved: "§aKit successfully saved!"
+    alreadyName: "§cA kit with this name already exists!"
 data:
   kits: {}
   customkits: {}

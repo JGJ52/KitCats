@@ -16,10 +16,17 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class CustomKitEditorGUI extends GUI {
+    private final GUI back;
+    private final ItemStack[] contents;
+    public CustomKitEditorGUI(GUI back, ItemStack[] contents) {
+        this.back = back;
+        this.contents = contents;
+    }
     private String currentPage;
     private boolean f = false;
     private boolean b = false;
@@ -51,11 +58,18 @@ public class CustomKitEditorGUI extends GUI {
         forwardMeta.setDisplayName(getMessage("pageScrollerForwardItemName"));
         forward.setItemMeta(forwardMeta);
 
+        ItemStack save = new ItemStack(Material.ARROW);
+        ItemMeta saveMeta = save.getItemMeta();
+        saveMeta.setDisplayName(getMessage("backItemName"));
+        save.setItemMeta(saveMeta);
+
         for (int i = 0; i < 54; i++) {
             if ((i + 2) % 9 == 0 || (i >= 36 && i <= 44)) {
                 gui.setItem(i, outline);
             } else if (!List.of(8, 17, 26, 35).contains(i)) {
                 gui.setItem(i, inline);
+            } else if (i == 53) {
+                gui.setItem(i, save);
             }
         }
 
@@ -157,6 +171,22 @@ public class CustomKitEditorGUI extends GUI {
                 ItemStack is = new ItemStack(item.getType(), item.getType().getMaxStackSize());
                 player.setItemOnCursor(is);
             }
+        } else if (event.getSlot() == 53) {
+            Map<Integer, Integer> armors = Map.of(
+                    39, 8,
+                    38, 17,
+                    37, 26,
+                    36, 35
+            );
+            for (int i = 0; i < contents.length; i++) {
+                if (armors.containsKey(i)) {
+                    contents[i] = gui.getItem(armors.get(i));
+                    continue;
+                }
+                contents[i] = player.getInventory().getContents()[i];
+            }
+
+            back.open(player);
         }
     }
 

@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -15,10 +14,10 @@ import java.util.List;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
-public class KitCreateGUI extends GUI {
+public class CustomKitCreateGUI extends GUI {
     private String name = getMessage("setNameItemName");
     private Material iconMaterial = Material.APPLE;
-    private ItemStack[] content = null;
+    private final ItemStack[] content = new ItemStack[41];
 
     @Override
     public void init(Player player) {
@@ -57,7 +56,7 @@ public class KitCreateGUI extends GUI {
             player.sendMessage(getMessage("setNameMessage"));
             ChatListener.add(player, e -> {
                 List<String> names = new ArrayList<>();
-                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
                 if (section != null) {
                     names.addAll(section.getKeys(false));
                 }
@@ -82,27 +81,19 @@ public class KitCreateGUI extends GUI {
                 return false;
             });
         } else if (event.getSlot() == 15) {
-            player.closeInventory();
-            player.sendMessage(getMessage("setContentMessage"));
-            ChatListener.add(player, e -> {
-                if ("done".equals(PlainTextComponentSerializer.plainText().serialize(e.message()))) {
-                    content = player.getInventory().getContents();
-                    open(player);
-                    return true;
-                }
-                return false;
-            });
+            new CustomKitEditorGUI(this, content).open(player);
         } else if (event.getSlot() == 26) {
             player.closeInventory();
-            if (name.equals(getMessage("setNameItemName")) || content == null) {
+            if (name.equals(getMessage("setNameItemName"))) {
                 player.sendMessage(getMessage("nameOrContentNotSet"));
                 return;
             }
-            plugin.getConfig().set("data.kits." + name + ".icon", iconMaterial.toString());
-            plugin.getConfig().set("data.kits." + name + ".contents", content);
+            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".icon", iconMaterial.toString());
+            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".contents", content);
             plugin.saveConfig();
             plugin.reloadConfig();
             player.sendMessage(getMessage("saved"));
+            gui = null;
         }
     }
 
