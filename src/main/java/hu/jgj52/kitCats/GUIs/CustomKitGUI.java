@@ -20,6 +20,22 @@ public class CustomKitGUI extends GUI {
     @Override
     public void init(Player player) {
         ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
+        ItemStack previous = new ItemStack(Material.ARROW);
+        ItemMeta previousMeta = previous.getItemMeta();
+        previousMeta.setDisplayName(getMessage("previousArrow"));
+        previous.setItemMeta(previousMeta);
+
+        ItemStack next = new ItemStack(Material.ARROW);
+        ItemMeta nextMeta = next.getItemMeta();
+        nextMeta.setDisplayName(getMessage("nextArrow"));
+        next.setItemMeta(nextMeta);
+
+        ItemStack create = new ItemStack(Material.BOOK);
+        ItemMeta createMeta = create.getItemMeta();
+        createMeta.setDisplayName(getMessage("createKitItemName"));
+        create.setItemMeta(createMeta);
+
+        gui.setItem(4, create);
         if (section == null) return;
         List<String> list = new ArrayList<>(section.getKeys(false));
         Collections.sort(list);
@@ -38,22 +54,6 @@ public class CustomKitGUI extends GUI {
             slot++;
             if ((slot + 1) % 9 == 0) slot += 2;
         }
-        ItemStack previous = new ItemStack(Material.ARROW);
-        ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.setDisplayName(getMessage("previousArrow"));
-        previous.setItemMeta(previousMeta);
-
-        ItemStack next = new ItemStack(Material.ARROW);
-        ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.setDisplayName(getMessage("nextArrow"));
-        next.setItemMeta(nextMeta);
-
-        ItemStack create = new ItemStack(Material.BOOK);
-        ItemMeta createMeta = create.getItemMeta();
-        createMeta.setDisplayName(getMessage("createKitItemName"));
-        create.setItemMeta(createMeta);
-
-        gui.setItem(4, create);
         if (page > 0) {
             gui.setItem(45, previous);
         }
@@ -79,7 +79,7 @@ public class CustomKitGUI extends GUI {
                 init(player);
             }
         } else if (event.getSlot() == 4) {
-            new KitCreateGUI().open(player);
+            new CustomKitCreateGUI().open(player);
         } else {
             String name = event.getCurrentItem().getItemMeta().getDisplayName();
             if (name.startsWith("§f")) {

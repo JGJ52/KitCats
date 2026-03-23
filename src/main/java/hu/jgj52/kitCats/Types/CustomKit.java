@@ -43,6 +43,13 @@ public class CustomKit {
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
+    public void reloadContents() {
+        Object obj = plugin.getConfig().get("data.customkits." + player.getUniqueId() + "." + name + ".contents");
+        if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
+        String icon = plugin.getConfig().getString("data.customkits." + player.getUniqueId() + "." + name + ".icon");
+        if (icon != null) this.icon = Material.matchMaterial(icon);
+    }
+
     public String getName() {
         return name;
     }

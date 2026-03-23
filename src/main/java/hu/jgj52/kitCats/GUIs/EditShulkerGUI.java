@@ -1,10 +1,10 @@
 package hu.jgj52.kitCats.GUIs;
 
-import hu.jgj52.kitCats.Types.CustomKit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -22,25 +23,13 @@ import java.util.Map;
 
 import static hu.jgj52.kitCats.KitCats.plugin;
 
-public class CustomKitEditorGUI extends GUI {
+public class EditShulkerGUI extends GUI {
     private final GUI back;
-    private final ItemStack[] contents;
-    private final CustomKit kit;
+    private final ItemStack item;
     private ItemStack[] inv;
-    public CustomKitEditorGUI(GUI back, ItemStack[] contents) {
+    public EditShulkerGUI(GUI back, ItemStack item) {
         this.back = back;
-        this.contents = contents;
-        this.kit = null;
-    }
-    public CustomKitEditorGUI(GUI back, CustomKit kit) {
-        this.back = back;
-        this.contents = null;
-        this.kit = kit;
-    }
-    public CustomKitEditorGUI(CustomKit kit) {
-        this.back = null;
-        this.contents = null;
-        this.kit = kit;
+        this.item = item;
     }
     private String currentPage;
     private boolean f = false;
@@ -86,18 +75,19 @@ public class CustomKitEditorGUI extends GUI {
         saveBackMeta.setDisplayName(getMessage("backItemName"));
         saveBack.setItemMeta(saveBackMeta);
 
-        ItemStack save = new ItemStack(Material.LIME_CONCRETE);
-        ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("saveItemName"));
-        save.setItemMeta(saveMeta);
-
+        ItemStack red = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta redMeta = red.getItemMeta();
+        redMeta.setHideTooltip(true);
+        red.setItemMeta(redMeta);
         for (int i = 0; i < 54; i++) {
             if ((i + 2) % 9 == 0 || (i >= 36 && i <= 44)) {
                 gui.setItem(i, outline);
-            } else if (!List.of(8, 17, 26, 35, 53).contains(i)) {
-                gui.setItem(i, i > 44 ? inl : inline);
+            } else if (List.of(8, 17, 26, 35).contains(i)) {
+                gui.setItem(i, red);
             } else if (i == 53) {
-                gui.setItem(i, kit == null ? saveBack : save);
+                gui.setItem(i, saveBack);
+            } else {
+                gui.setItem(i, i > 44 ? inl : inline);
             }
         }
 
@@ -168,53 +158,27 @@ public class CustomKitEditorGUI extends GUI {
     @Override
     public void firstInit(Player player) {
         inv = player.getInventory().getContents().clone();
-        player.getInventory().clear();
-        ItemStack[] contents = new ItemStack[0];
-        if (this.contents != null) {
-            contents = this.contents;
-        } else if (kit != null) {
-            contents = kit.getContents();
-        }
-        Map<Integer, Integer> map = Map.of(
-                39, 8,
-                38, 17,
-                37, 26,
-                36, 35
-        );
-        for (int i = 0; i < contents.length; i++) {
-            if (map.containsKey(i)) {
-                gui.setItem(map.get(i), contents[i]);
+        ItemStack[] contents = new ItemStack[41];
+        BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
+        ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+        ItemStack inline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta inlineMeta = inline.getItemMeta();
+        inlineMeta.setHideTooltip(true);
+        inline.setItemMeta(inlineMeta);
+        for (int i = 0; i < 36; i++) {
+            if (i >= 9) {
+                contents[i] = shulker.getInventory().getContents()[i - 9];
             } else {
-                player.getInventory().setItem(i, contents[i]);
+                contents[i] = inline;
             }
         }
+        player.getInventory().setContents(contents);
     }
 
     @Override
     public void onClick(InventoryClickEvent event) {
-        ItemStack item = gui.getItem(event.getSlot());
-        ItemStack cursor = event.getCursor();
-        if (List.of(8, 17, 26, 35).contains(event.getSlot())) {
-            String end = switch (event.getSlot()) {
-                case 8 -> "_HELMET";
-                case 17 -> "_CHESTPLATE";
-                case 26 -> "_LEGGINGS";
-                case 35 -> "_BOOTS";
-                default -> "";
-            };
-            if ((item != null && !item.getType().name().endsWith(end)) || cursor.getType() != Material.AIR && !cursor.getType().name().endsWith(end)) {
-                event.setCancelled(true);
-                return;
-            }
-            if (!event.getClick().isShiftClick()) return;
-            if (!(event.getWhoClicked() instanceof Player player)) return;
-            if (item == null) return;
-            new EditItemGUI(this, item, player.getInventory().getContents(), true).open(player);
-            player.getInventory().clear();
-            event.setCancelled(true);
-            return;
-        }
         event.setCancelled(true);
+        ItemStack item = gui.getItem(event.getSlot());
         if (item == null) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getSlot() == 51 && f) {
@@ -238,78 +202,51 @@ public class CustomKitEditorGUI extends GUI {
                 is.setItemMeta(im);
                 player.setItemOnCursor(is);
             }
-        } else if (event.getSlot() == 53 && contents != null) {
-            Map<Integer, Integer> armors = Map.of(
-                    39, 8,
-                    38, 17,
-                    37, 26,
-                    36, 35
-            );
-            for (int i = 0; i < contents.length; i++) {
-                if (armors.containsKey(i)) {
-                    contents[i] = gui.getItem(armors.get(i));
-                    continue;
-                }
-                contents[i] = player.getInventory().getContents()[i];
+        } else if (event.getSlot() == 53) {
+            BlockStateMeta meta = (BlockStateMeta) this.item.getItemMeta();
+            ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+            ItemStack[] contents = new ItemStack[27];
+            for (int i = 0; i < 27; i++) {
+                contents[i] = player.getInventory().getContents()[i + 9];
             }
-
-            if (back != null) { // i know its never null here but i hate when idea is crying
-                back.open(player);
-            }
-        } else if (event.getSlot() == 53 && kit != null) {
-            ItemStack[] contents = new ItemStack[41];
-            Map<Integer, Integer> armors = Map.of(
-                    39, 8,
-                    38, 17,
-                    37, 26,
-                    36, 35
-            );
-            for (int i = 0; i < contents.length; i++) {
-                if (armors.containsKey(i)) {
-                    contents[i] = gui.getItem(armors.get(i));
-                    continue;
-                }
-                contents[i] = player.getInventory().getContents()[i];
-            }
-            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + kit.getName() + ".contents", contents);
-            plugin.saveConfig();
-            plugin.reloadConfig();
-            kit.reloadContents();
+            shulker.getInventory().setContents(contents);
+            meta.setBlockState(shulker);
+            this.item.setItemMeta(meta);
             player.getInventory().setContents(inv);
-            if (back != null) {
-                back.open(player);
-            } else {
-                player.closeInventory();
-                player.sendMessage(getMessage("saved"));
-            }
+            back.open(player);
         }
     }
 
     @Override
     public void onBottomClick(InventoryClickEvent event) {
-        if (!event.getClick().isShiftClick()) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        ItemStack item = player.getInventory().getItem(event.getSlot());
-        if (item == null) return;
-        boolean armor = false;
-        for (String end : List.of("_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS")) {
-            if (item.getType().name().endsWith(end)) {
-                armor = true;
-                break;
-            }
+        if ((event.getSlot() >= 0 && event.getSlot() <= 8) || event.getCursor().getType().name().endsWith("SHULKER_BOX") || event.getClick().isKeyboardClick()) {
+            event.setCancelled(true);
+            return;
         }
-        new EditItemGUI(this, item, player.getInventory().getContents(), armor).open(player);
-        player.getInventory().clear();
+        if (event.isShiftClick()) {
+            ItemStack item = player.getInventory().getItem(event.getSlot());
+            if (item == null) return;
+            boolean armor = false;
+            for (String end : List.of("_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS")) {
+                if (item.getType().name().endsWith(end)) {
+                    armor = true;
+                    break;
+                }
+            }
+            new EditItemGUI(this, item, player.getInventory().getContents(), armor).open(player);
+            player.getInventory().clear();
+        }
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        event.getPlayer().getInventory().clear();
     }
 
     @Override
     public void onDrop(PlayerDropItemEvent event) {
         event.getItemDrop().remove();
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        event.getPlayer().getInventory().setContents(inv);
     }
 
     @Override

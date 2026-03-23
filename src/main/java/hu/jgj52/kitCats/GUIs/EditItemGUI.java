@@ -24,13 +24,13 @@ public class EditItemGUI extends GUI {
     private final ItemStack[] inv;
     private final boolean armor;
     private final Trim trim = new Trim(null, null);
-    private final boolean potion;
+    private final boolean shulker;
     public EditItemGUI(GUI back, ItemStack item, ItemStack[] inv, boolean armor) {
         this.back = back;
         this.item = item;
         this.inv = inv;
         this.armor = armor;
-        potion = item.getType().name().endsWith("POTION");
+        shulker = item.getType().name().endsWith("SHULKER_BOX");
     }
 
     @Override
@@ -60,9 +60,10 @@ public class EditItemGUI extends GUI {
         nameMeta.setDisplayName(getMessage("nameItemName"));
         name.setItemMeta(nameMeta);
 
-        ItemStack effect = new ItemStack(Material.NETHER_WART);
-        ItemMeta effectMeta = effect.getItemMeta();
-        effectMeta.setDisplayName(getMessage("effectItemName"));
+        ItemStack content = new ItemStack(Material.CHEST);
+        ItemMeta contentMeta = content.getItemMeta();
+        contentMeta.setDisplayName(getMessage("contentItemName"));
+        content.setItemMeta(contentMeta);
 
         if (trim.trim() != null) {
             ArmorMeta am = (ArmorMeta) item.getItemMeta();
@@ -114,8 +115,8 @@ public class EditItemGUI extends GUI {
                 gui.setItem(i, trim);
             } else if (i == 6 && armor && player.hasPermission("kitcats.customkits.trim")) {
                 gui.setItem(i, trimMaterial);
-            } else if (i == 24 && potion && player.hasPermission("kitcats.customkits.potion")) {
-                gui.setItem(i, effect);
+            } else if (i == 15 && shulker && player.hasPermission("kitcats.customkits.shulker")) {
+                gui.setItem(i, content);
             }
             else gui.setItem(i, inline);
         }
@@ -148,11 +149,11 @@ public class EditItemGUI extends GUI {
                         return true;
                     });
                     break;
+                case 15:
+                    new EditShulkerGUI(this, this.item).open(player);
+                    break;
                 case 23:
                     new EnchantItemGUI(this, this.item).open(player);
-                    break;
-                case 24:
-                    new PotionItemGUI(this, this.item).open(player);
                     break;
             }
         }

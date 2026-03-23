@@ -47,6 +47,13 @@ public class Kit {
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
+    public void reloadContents() {
+        Object obj = plugin.getConfig().get("data.kits." + name + ".contents");
+        if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
+        String icon = plugin.getConfig().getString("data.kits." + name + ".icon");
+        if (icon != null) this.icon = Material.matchMaterial(icon);
+    }
+
     public String getName() {
         return name;
     }

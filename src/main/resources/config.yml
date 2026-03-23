@@ -5,12 +5,9 @@ messages:
   kitCreated: "§aKit successfully created!"
   alreadyName: "§cA kit with this name already exists"
 customkits:
-  pages: # these are also configurable through /page in-game
-    name: # the name of the page
-      icon: OAK_PLANKS # icon of the page
-      items: # list of items contained on the page. max 28/page
-        - DIAMOND_SWORD
-        - NETHERITE_SWORD
+  enchants:
+    disabled: {}
+  pages: {}
 guis:
   KitPreviewGUI:
     name: "Kit preview"
@@ -53,6 +50,8 @@ guis:
     pageScrollerForwardItemName: "§fForward"
     backItemName: "§fBack"
     saveItemName: "§aSave"
+    noPages: "§cThere's no pages to get items from!\nAsk an admin to add a page"
+    saved: "§aSuccessfully saved!"
   EditItemGUI:
     name: "Edit item"
     setNameMessage: "§eType the name of the item to chat"
@@ -62,6 +61,7 @@ guis:
     trimPatternItemName: "§6Trim Pattern"
     trimMaterialItemName: "§6Trim Material"
     effectItemName: "§6Effects"
+    contentItemName: "§6Content"
   EnchantItemGUI:
     name: "Enchant item"
   TrimMaterialArmorGUI:
@@ -71,7 +71,7 @@ guis:
     name: "Set trim pattern"
     backItemName: "§fBack"
   CustomKitCreateGUI:
-    name: "Create custom kit"
+    name: "Create a new custom kit"
     setNameItemName: "§fClick this to set the name of your kit"
     setIconItemName: "§fClick this to set the icon of your kit"
     setContentItemName: "§fClick this to set the content of your kit"
@@ -98,7 +98,25 @@ guis:
     pageScrollerBackItemName: "§fBack"
     pageScrollerForwardItemName: "§fForward"
     saveItemName: "§aSave"
+    addItemName: "§fAdd a new page"
+    deleteItemMeta: "§cDelete current page"
     saved: "§aPages successfully saved!"
+    deleted: "§cPage successfully deleted!"
+    atLeastOne: "§cYou need to have at least one page!"
+  CreatePageGUI:
+    name: "Create a new page"
+    nameItemName: "§fClick here to set the name of the page"
+    iconItemName: "§fClick here to set the icon of the page"
+    backItemName: "§fBack"
+    setNameMessage: "§eType the name to chat"
+    alreadyName: "§cThere's already a page named this!"
+    setIconMessage: "§eHold the icon of the page in your hand, then type \"done\"!"
+  EditShulkerGUI:
+    name: "Edit shulker content"
+    pageScrollerBackItemName: "§fBack"
+    pageScrollerForwardItemName: "§fForward"
+    backItemName: "§fBack"
+    noPages: "§cThere's no pages to get items from!\nAsk an admin to add a page"
 data:
   kits: {}
   customkits: {}

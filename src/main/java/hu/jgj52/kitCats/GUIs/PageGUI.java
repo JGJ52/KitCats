@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -27,6 +28,10 @@ public class PageGUI extends GUI {
         b = false;
         ConfigurationSection pages = plugin.getConfig().getConfigurationSection("customkits.pages");
         if (pages == null) return;
+        if (pages.getKeys(false).isEmpty()) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> new CreatePageGUI(this).open(player), 1L);
+            return;
+        }
 
         ItemStack outline = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta outlineMeta = outline.getItemMeta();
@@ -37,7 +42,9 @@ public class PageGUI extends GUI {
         ItemStack dataLessInline = inline.clone();
         ItemMeta inlineMeta = inline.getItemMeta();
         inlineMeta.setHideTooltip(true);
-        dataLessInline.setItemMeta(inlineMeta);
+        ItemMeta dataLessInlineMeta = inlineMeta.clone();
+        dataLessInlineMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "empty"), PersistentDataType.BOOLEAN, true);
+        dataLessInline.setItemMeta(dataLessInlineMeta);
         inlineMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
         inline.setItemMeta(inlineMeta);
 
@@ -61,16 +68,29 @@ public class PageGUI extends GUI {
         saveMeta.setDisplayName(getMessage("saveItemName"));
         save.setItemMeta(saveMeta);
 
+        ItemStack addItem = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta addMeta = addItem.getItemMeta();
+        addMeta.setDisplayName(getMessage("addItemName"));
+        addItem.setItemMeta(addMeta);
+
+        ItemStack delete = new ItemStack(Material.RED_CONCRETE);
+        ItemMeta deleteMeta = delete.getItemMeta();
+        deleteMeta.setDisplayName(getMessage("deleteItemMeta"));
+        delete.setItemMeta(deleteMeta);
+
         for (int i = 0; i < 54; i++) {
             if ((i + 2) % 9 == 0 || (i >= 36 && i <= 44)) {
                 gui.setItem(i, outline);
-            } else if (List.of(8, 17, 26, 35).contains(i)) {
+            } else if (List.of(26, 35).contains(i)) {
                 gui.setItem(i, red);
-            } else if (i != 53) {
-                gui.setItem(i, i <= 33 ? inline : dataLessInline);
-            } else {
+            } else if (i == 53) {
                 gui.setItem(i, save);
+            } else if (i == 8) {
+                gui.setItem(i, addItem);
+            } else if (i == 17) {
+                gui.setItem(i, delete);
             }
+            else gui.setItem(i, i <= 33 ? inline : dataLessInline);
         }
 
         if (pages.getKeys(false).size() > 7 && pageOffset + 6 != pages.getKeys(false).size()) {
@@ -116,6 +136,16 @@ public class PageGUI extends GUI {
             } else {
                 is = new ItemStack(material, material.getMaxStackSize());
                 ItemMeta im = is.getItemMeta();
+                ConfigurationSection metas = toSave.containsKey("customkits.pages." + currentPage + ".metas") ? (ConfigurationSection) toSave.get("customkits.pages." + currentPage + ".metas") : pages.getConfigurationSection(currentPage + ".metas");
+                if (metas != null) {
+                    int a = 0;
+                    if (i > 8) a--;
+                    if (i > 17) a--;
+                    if (i > 26) a--;
+                    if (metas.get(String.valueOf(i + a * 2)) instanceof ItemMeta meta) {
+                        im = meta;
+                    }
+                }
                 im.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
                 is.setItemMeta(im);
             }
@@ -140,10 +170,30 @@ public class PageGUI extends GUI {
                 init(player);
             }
         } else if (event.getSlot() >= 45 && event.getSlot() <= 51) {
+            if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "empty"))) return;
             currentPage = ChatColor.stripColor(item.getItemMeta().getDisplayName());
             init(player);
         }
-        if (event.getSlot() <= 33) {
+        if (event.getSlot() == 8) {
+            new CreatePageGUI(this).open(player);
+        } else if (event.getSlot() == 17) {
+            ConfigurationSection section = plugin.getConfig().getConfigurationSection("customkits.pages");
+            if (section != null) {
+                if (section.getKeys(false).size() <= 1) {
+                    player.sendMessage(getMessage("atLeastOne"));
+                    return;
+                }
+            }
+            for (String key : toSave.keySet()) {
+                plugin.getConfig().set(key, toSave.get(key));
+            }
+            toSave.clear();
+            plugin.getConfig().set("customkits.pages." + currentPage, null);
+            plugin.saveConfig();
+            plugin.reloadConfig();
+            player.sendMessage(getMessage("deleted"));
+            player.closeInventory();
+        } else if (event.getSlot() <= 33) {
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN)) {
                 if (!event.getClick().isMouseClick()) return;
                 ItemStack cursor = event.getCursor().clone();
@@ -152,13 +202,13 @@ public class PageGUI extends GUI {
                 inlineMeta.setHideTooltip(true);
                 inline.setItemMeta(inlineMeta);
                 boolean n = false;
-                cursor = new ItemStack(cursor.getType());
                 if (cursor.getType() == Material.AIR) {
                     cursor = inline;
                     n = true;
                 }
                 ItemMeta cursorMeta = cursor.getItemMeta();
                 cursorMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
+                ItemStack beforeCursor = cursor.clone();
                 cursor.setItemMeta(cursorMeta);
                 gui.setItem(event.getSlot(), cursor);
                 player.setItemOnCursor(null);
@@ -172,14 +222,20 @@ public class PageGUI extends GUI {
                     list.addAll(Collections.nCopies(index - list.size() + 1, Material.AIR.name()));
                 }
                 list.set(index, n ? Material.AIR.name() : cursor.getType().name());
+                ConfigurationSection metas = plugin.getConfig().getConfigurationSection("customkits.pages." + currentPage + ".metas");
+                if (metas == null) metas = plugin.getConfig().createSection("customkits.pages." + currentPage + ".metas");
+                if (!n) {
+                    metas.set(String.valueOf(index), beforeCursor.getItemMeta());
+                    toSave.put("customkits.pages." + currentPage + ".metas", metas);
+                }
                 toSave.put("customkits.pages." + currentPage + ".items", list);
             }
-        }
-        if (event.getSlot() == 53) {
+        } else if (event.getSlot() == 53) {
             // this toSave's getter is very bad but i dont wanna make a class for it
             for (String key : toSave.keySet()) {
                 plugin.getConfig().set(key, toSave.get(key));
             }
+            toSave.clear();
             plugin.saveConfig();
             plugin.reloadConfig();
             player.sendMessage(getMessage("saved"));

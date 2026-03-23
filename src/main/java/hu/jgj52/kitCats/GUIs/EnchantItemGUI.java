@@ -65,8 +65,9 @@ public class EnchantItemGUI extends GUI {
         }
 
         int slot = 37;
+        List<String> disabled = plugin.getConfig().getStringList("customkits.enchants.disabled");
         for (Enchantment enchantment : Enchantment.values()) {
-            if (enchantment.canEnchantItem(item)) {
+            if (enchantment.canEnchantItem(item) && !disabled.contains(enchantment.getKey().getKey())) {
                 slots.put(slot, enchantment);
                 int level = levels.computeIfAbsent(enchantment, e -> 0);
                 ItemStack enchant = new ItemStack(Material.ENCHANTED_BOOK);
