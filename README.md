@@ -38,6 +38,8 @@ customkits:
     - create: create a custom kit
     - delete: delete a custom kit
     - edit: edit one of your custom kit's content **note: you can edit the items by shift-clicking them**
+
+      ![edititem](images/edititem.png)
     - load: load one of your custom kit into your inventory
     - preview: preview one of your custom kit
 
