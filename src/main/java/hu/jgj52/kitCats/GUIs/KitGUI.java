@@ -53,7 +53,9 @@ public class KitGUI extends GUI {
         createMeta.setDisplayName(getMessage("createKitItemName"));
         create.setItemMeta(createMeta);
 
-        gui.setItem(4, create);
+        if (player.hasPermission("kitcats.command.kit.create")) {
+            gui.setItem(4, create);
+        }
         if (page > 0) {
             gui.setItem(45, previous);
         }
@@ -79,7 +81,9 @@ public class KitGUI extends GUI {
                 init(player);
             }
         } else if (event.getSlot() == 4) {
-            new KitCreateGUI().open(player);
+            if (player.hasPermission("kitcats.command.kit.create")) {
+                new KitCreateGUI().open(player);
+            }
         } else {
             String name = event.getCurrentItem().getItemMeta().getDisplayName();
             if (name.startsWith("§f")) {
