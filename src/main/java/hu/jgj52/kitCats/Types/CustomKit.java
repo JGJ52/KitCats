@@ -29,6 +29,12 @@ public class CustomKit {
         return list;
     }
 
+    public static void create(Player player, String name, Material icon, ItemStack[] content) {
+        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".icon", icon.toString());
+        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".contents", content);
+        save();
+    }
+
     private final String name;
     private final Player player;
     private ItemStack[] contents;

@@ -1,6 +1,7 @@
 package hu.jgj52.kitCats.GUIs;
 
 import hu.jgj52.kitCats.Listeners.ChatListener;
+import hu.jgj52.kitCats.Types.CustomKit;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -88,10 +89,7 @@ public class CustomKitCreateGUI extends GUI {
                 player.sendMessage(getMessage("nameOrContentNotSet"));
                 return;
             }
-            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".icon", iconMaterial.toString());
-            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".contents", content);
-            plugin.saveConfig();
-            plugin.reloadConfig();
+            CustomKit.create(player, name, iconMaterial, content);
             player.sendMessage(getMessage("saved"));
             gui = null;
         }

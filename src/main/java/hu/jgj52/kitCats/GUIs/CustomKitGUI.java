@@ -90,9 +90,13 @@ public class CustomKitGUI extends GUI {
                 name = ChatColor.stripColor(name);
                 CustomKit kit = CustomKit.of(name, player);
                 if (event.getClick().isLeftClick()) {
-                    player.getInventory().setContents(kit.getContents());
+                    if (player.hasPermission("kitcats.command.customkits.load")) {
+                        player.getInventory().setContents(kit.getContents());
+                    }
                 } else if (event.getClick().isRightClick()) {
-                    new CustomKitPreviewGUI(kit, this).open(player);
+                    if (player.hasPermission("kitcats.command.customkits.preview")) {
+                        new CustomKitPreviewGUI(kit, this).open(player);
+                    }
                 }
             }
         }

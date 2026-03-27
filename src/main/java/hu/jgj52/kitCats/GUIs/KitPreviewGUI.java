@@ -55,7 +55,7 @@ public class KitPreviewGUI extends GUI {
                 gui.setItem(i, contents[40]);
             } else if (i >= 45) {
                 gui.setItem(i, contents[i - 45]);
-            } else if (i == 8) {
+            } else if (i == 8 && player.hasPermission("kitcats.command.kit.edit")) {
                 gui.setItem(i, edit);
             } else if (this.back != null && i == 0) {
                 gui.setItem(i, back);
@@ -72,7 +72,9 @@ public class KitPreviewGUI extends GUI {
         event.setCancelled(true);
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getSlot() == 8) {
-            new EditKitGUI(kit, this).open(player);
+            if (player.hasPermission("kitcats.command.kit.edit")) {
+                new EditKitGUI(kit, this).open(player);
+            }
         } else if (back != null && event.getSlot() == 0) {
             back.open(player);
         } else if (event.getSlot() == 7) {
