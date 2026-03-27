@@ -12,6 +12,7 @@ import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class CustomKit {
     public static CustomKit of(String name, Player player) {
+        if (plugin.getConfig().get("data.customkits." + player.getUniqueId() + "." + name) == null) return null;
         return new CustomKit(name, player);
     }
     private static void save() {

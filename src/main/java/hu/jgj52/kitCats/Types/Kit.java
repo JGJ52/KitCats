@@ -18,6 +18,7 @@ import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class Kit {
     public static Kit of(String name) {
+        if (plugin.getConfig().get("data.kits." + name) == null) return null;
         return new Kit(name);
     }
     private static void save() {
