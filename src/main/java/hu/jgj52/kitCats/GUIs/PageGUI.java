@@ -204,6 +204,11 @@ public class PageGUI extends GUI {
                 boolean n = false;
                 if (cursor.getType() == Material.AIR) {
                     cursor = inline;
+                    ItemStack i = item.clone();
+                    ItemMeta iMeta = i.getItemMeta();
+                    iMeta.getPersistentDataContainer().remove(new NamespacedKey(plugin, "pageContent"));
+                    i.setItemMeta(iMeta);
+                    player.setItemOnCursor(i);
                     n = true;
                 }
                 ItemMeta cursorMeta = cursor.getItemMeta();
@@ -211,7 +216,9 @@ public class PageGUI extends GUI {
                 ItemStack beforeCursor = cursor.clone();
                 cursor.setItemMeta(cursorMeta);
                 gui.setItem(event.getSlot(), cursor);
-                player.setItemOnCursor(null);
+                if (!n) {
+                    player.setItemOnCursor(null);
+                }
                 List<String> list = toSave.containsKey("customkits.pages." + currentPage + ".items") ? (List<String>) toSave.get("customkits.pages." + currentPage + ".items") : plugin.getConfig().getStringList("customkits.pages." + currentPage + ".items");
                 int add = 0;
                 if (event.getSlot() > 8) add--;
