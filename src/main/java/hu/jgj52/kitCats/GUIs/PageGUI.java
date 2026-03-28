@@ -200,15 +200,11 @@ public class PageGUI extends GUI {
                 ItemStack inline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
                 ItemMeta inlineMeta = inline.getItemMeta();
                 inlineMeta.setHideTooltip(true);
+                inlineMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN, true);
                 inline.setItemMeta(inlineMeta);
                 boolean n = false;
                 if (cursor.getType() == Material.AIR) {
                     cursor = inline;
-                    ItemStack i = item.clone();
-                    ItemMeta iMeta = i.getItemMeta();
-                    iMeta.getPersistentDataContainer().remove(new NamespacedKey(plugin, "pageContent"));
-                    i.setItemMeta(iMeta);
-                    player.setItemOnCursor(i);
                     n = true;
                 }
                 ItemMeta cursorMeta = cursor.getItemMeta();
@@ -216,9 +212,11 @@ public class PageGUI extends GUI {
                 ItemStack beforeCursor = cursor.clone();
                 cursor.setItemMeta(cursorMeta);
                 gui.setItem(event.getSlot(), cursor);
-                if (!n) {
-                    player.setItemOnCursor(null);
-                }
+                ItemStack i = item.clone();
+                ItemMeta iMeta = i.getItemMeta();
+                iMeta.getPersistentDataContainer().remove(new NamespacedKey(plugin, "pageContent"));
+                i.setItemMeta(iMeta);
+                player.setItemOnCursor(!item.isSimilar(inline) ? i : null);
                 List<String> list = toSave.containsKey("customkits.pages." + currentPage + ".items") ? (List<String>) toSave.get("customkits.pages." + currentPage + ".items") : plugin.getConfig().getStringList("customkits.pages." + currentPage + ".items");
                 int add = 0;
                 if (event.getSlot() > 8) add--;
