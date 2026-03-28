@@ -79,13 +79,13 @@ public class EnchantItemGUI extends GUI {
                     enchantMeta.setEnchantmentGlintOverride(false);
                 }
                 List<Component> lore = new ArrayList<>(List.of(
-                        Component.text("Level: ").append(level != 0 ? Component.translatable("enchantment.level." + level) : Component.text("0")).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                        Component.text("Max level: ").append(Component.translatable("enchantment.level." + enchantment.getMaxLevel())).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
+                        Component.text(getMessage("level")).append(level != 0 ? Component.translatable("enchantment.level." + level) : Component.text("0")).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
+                        Component.text(getMessage("maxLevel")).append(Component.translatable("enchantment.level." + enchantment.getMaxLevel())).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
                 ));
                 for (Enchantment ench : item.getEnchantments().keySet()) {
                     if (ench == enchantment) continue;
                     if (ench.conflictsWith(enchantment)) {
-                        lore.add(Component.text("Incompatible with ").append(Component.translatable("enchantment." + ench.getKey().getNamespace() + "." + ench.getKey().getKey())).color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                        lore.add(Component.text(getMessage("incompatible")).append(Component.translatable("enchantment." + ench.getKey().getNamespace() + "." + ench.getKey().getKey())).color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
                         enchantMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "incompatible"), PersistentDataType.BOOLEAN, true);
                     }
                 }

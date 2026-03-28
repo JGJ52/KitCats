@@ -64,6 +64,9 @@ guis:
     contentItemName: "§6Content"
   EnchantItemGUI:
     name: "Enchant item"
+    level: "Level: "
+    maxLevel: "Max level: "
+    incompatible: "Incompatible with "
   TrimMaterialArmorGUI:
     name: "Set trim material"
     backItemName: "§fBack"
