@@ -1,5 +1,5 @@
 name: KitCats
-version: '1.6'
+version: '1.7'
 main: hu.jgj52.kitCats.KitCats
 api-version: '1.21'
 authors: [ JGJ52 ]

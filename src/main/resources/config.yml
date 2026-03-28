@@ -60,7 +60,6 @@ guis:
     nameItemName: "§6Rename"
     trimPatternItemName: "§6Trim Pattern"
     trimMaterialItemName: "§6Trim Material"
-    effectItemName: "§6Effects"
     contentItemName: "§6Content"
   EnchantItemGUI:
     name: "Enchant item"

@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -300,6 +302,16 @@ public class CustomKitEditorGUI extends GUI {
         }
         new EditItemGUI(this, item, player.getInventory().getContents(), armor).open(player);
         player.getInventory().clear();
+    }
+
+    @Override
+    public void onMove(PlayerMoveEvent event) {
+        event.getPlayer().closeInventory();
+    }
+
+    @Override
+    public void onInteract(PlayerInteractEvent event) {
+        event.getPlayer().closeInventory();
     }
 
     @Override
