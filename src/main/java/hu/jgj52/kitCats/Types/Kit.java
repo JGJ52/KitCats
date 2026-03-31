@@ -154,4 +154,9 @@ public class Kit {
         plugin.getConfig().set("data.kits." + name + ".player." + player.getUniqueId(), null);
         save();
     }
+
+    public void delete() {
+        plugin.getConfig().set("data.kits." + name, null);
+        save();
+    }
 }

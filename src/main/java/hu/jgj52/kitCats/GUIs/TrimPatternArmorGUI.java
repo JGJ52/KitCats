@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.GUI;
 import hu.jgj52.kitCats.Types.Trim;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class TrimPatternArmorGUI extends GUI {
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         for (int i = 0; i < 54; i++) {

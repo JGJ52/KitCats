@@ -1,5 +1,7 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.GUI;
+import hu.jgj52.libCats.Utils.RegistryFromName;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -49,7 +51,7 @@ public class EnchantItemGUI extends GUI {
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         for (int i = 0; i < 54; i++) {
@@ -66,7 +68,7 @@ public class EnchantItemGUI extends GUI {
 
         int slot = 37;
         List<String> disabled = plugin.getConfig().getStringList("customkits.enchants.disabled");
-        for (Enchantment enchantment : Enchantment.values()) {
+        for (Enchantment enchantment : RegistryFromName.ENCHANTMENT()) {
             if (enchantment.canEnchantItem(item) && !disabled.contains(enchantment.getKey().getKey())) {
                 slots.put(slot, enchantment);
                 int level = levels.computeIfAbsent(enchantment, e -> 0);
@@ -79,13 +81,13 @@ public class EnchantItemGUI extends GUI {
                     enchantMeta.setEnchantmentGlintOverride(false);
                 }
                 List<Component> lore = new ArrayList<>(List.of(
-                        Component.text(getMessage("level")).append(level != 0 ? Component.translatable("enchantment.level." + level) : Component.text("0")).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                        Component.text(getMessage("maxLevel")).append(Component.translatable("enchantment.level." + enchantment.getMaxLevel())).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
+                        getComponent("level", true).append(level != 0 ? Component.translatable("enchantment.level." + level) : Component.text("0")),
+                        getComponent("maxLevel", true).append(Component.translatable("enchantment.level." + enchantment.getMaxLevel()))
                 ));
                 for (Enchantment ench : item.getEnchantments().keySet()) {
                     if (ench == enchantment) continue;
                     if (ench.conflictsWith(enchantment)) {
-                        lore.add(Component.text(getMessage("incompatible")).append(Component.translatable("enchantment." + ench.getKey().getNamespace() + "." + ench.getKey().getKey())).color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                        lore.add(getComponent("incompatible", true).append(Component.translatable("enchantment." + ench.getKey().getNamespace() + "." + ench.getKey().getKey())));
                         enchantMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "incompatible"), PersistentDataType.BOOLEAN, true);
                     }
                 }

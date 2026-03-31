@@ -1,26 +1,29 @@
 package hu.jgj52.kitCats.Commands;
 
 import hu.jgj52.kitCats.GUIs.PageGUI;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import hu.jgj52.kitCats.Types.Command;
+import hu.jgj52.libCats.Types.SubCommand;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PageCommand implements CommandExecutor, TabCompleter {
+public class PageCommand extends Command {
+
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        if (!(commandSender instanceof Player player)) return true;
-        new PageGUI().open(player);
-        return true;
+    public String getName() {
+        return "page";
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
+    public List<SubCommand> getSubCommands() {
         return List.of();
+    }
+
+    @Override
+    public boolean execute(@NotNull CommandSender commandSender, org.bukkit.command.@NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings, @NotNull Player player) {
+        new PageGUI().open(player);
+        return true;
     }
 }

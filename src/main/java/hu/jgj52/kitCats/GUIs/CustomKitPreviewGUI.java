@@ -1,6 +1,7 @@
 package hu.jgj52.kitCats.GUIs;
 
 import hu.jgj52.kitCats.Types.CustomKit;
+import hu.jgj52.kitCats.Types.GUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -29,12 +30,12 @@ public class CustomKitPreviewGUI extends GUI {
 
         ItemStack edit = new ItemStack(Material.BOOK);
         ItemMeta editMeta = edit.getItemMeta();
-        editMeta.setDisplayName(getMessage("editItemName"));
+        editMeta.displayName(getComponent("editItemName", true));
         edit.setItemMeta(editMeta);
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         for (int i = 0; i < 54; i++) {

@@ -1,45 +1,44 @@
 package hu.jgj52.kitCats.GUIs;
 
-import hu.jgj52.kitCats.Listeners.ChatListener;
+import hu.jgj52.kitCats.Types.GUI;
+import hu.jgj52.libCats.Listeners.ChatListener;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static hu.jgj52.kitCats.KitCats.kits;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class KitCreateGUI extends GUI {
-    private String name = getMessage("setNameItemName");
+    private Component name = getComponent("setNameItemName", true);
     private Material iconMaterial = Material.APPLE;
     private ItemStack[] content = null;
+    private boolean nameSet = false;
 
     @Override
     public void init(Player player) {
         ItemStack name = new ItemStack(Material.PAPER);
         ItemMeta nameMeta = name.getItemMeta();
-        nameMeta.setDisplayName(this.name);
+        nameMeta.displayName(this.name);
         name.setItemMeta(nameMeta);
 
         ItemStack icon = new ItemStack(iconMaterial);
         ItemMeta iconMeta = icon.getItemMeta();
-        iconMeta.setDisplayName(getMessage("setIconItemName"));
+        iconMeta.displayName(getComponent("setIconItemName", true));
         icon.setItemMeta(iconMeta);
 
         ItemStack content = new ItemStack(Material.CHEST);
         ItemMeta contentMeta = content.getItemMeta();
-        contentMeta.setDisplayName(getMessage("setContentItemName"));
+        contentMeta.displayName(getComponent("setContentItemName", true));
         content.setItemMeta(contentMeta);
 
         ItemStack save = new ItemStack(Material.LIME_CONCRETE);
         ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("saveItemName"));
+        saveMeta.displayName(getComponent("saveItemName", true));
         save.setItemMeta(saveMeta);
 
         gui.setItem(11, name);
@@ -54,55 +53,41 @@ public class KitCreateGUI extends GUI {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getSlot() == 11) {
             player.closeInventory();
-            player.sendMessage(getMessage("setNameMessage"));
+            player.sendMessage(getComponent("setNameMessage"));
             ChatListener.add(player, e -> {
-                List<String> names = new ArrayList<>();
-                ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
-                if (section != null) {
-                    names.addAll(section.getKeys(false));
-                }
-                String name = PlainTextComponentSerializer.plainText().serialize(e.message());
-                if (names.contains(name)) {
-                    player.sendMessage(getMessage("alreadyName"));
+                if (kits.getConfig().getKeys(false).contains(PlainTextComponentSerializer.plainText().serialize(e))) {
+                    player.sendMessage(getComponent("alreadyName"));
                 } else {
-                    this.name = name;
+                    nameSet = true;
+                    this.name = e;
                 }
                 open(player);
-                return true;
             });
         } else if (event.getSlot() == 13) {
             player.closeInventory();
-            player.sendMessage(getMessage("setIconMessage"));
-            ChatListener.add(player, e -> {
-                if ("done".equals(PlainTextComponentSerializer.plainText().serialize(e.message()))) {
-                    iconMaterial = player.getInventory().getItemInMainHand().getType();
-                    open(player);
-                    return true;
-                }
-                return false;
+            player.sendMessage(getComponent("setIconMessage"));
+            ChatListener.add(player, "done", e -> {
+                iconMaterial = player.getInventory().getItemInMainHand().getType();
+                open(player);
             });
         } else if (event.getSlot() == 15) {
             player.closeInventory();
-            player.sendMessage(getMessage("setContentMessage"));
-            ChatListener.add(player, e -> {
-                if ("done".equals(PlainTextComponentSerializer.plainText().serialize(e.message()))) {
-                    content = player.getInventory().getContents();
-                    open(player);
-                    return true;
-                }
-                return false;
+            player.sendMessage(getComponent("setContentMessage"));
+            ChatListener.add(player, "done", e -> {
+                content = player.getInventory().getContents();
+                open(player);
             });
         } else if (event.getSlot() == 26) {
             player.closeInventory();
-            if (name.equals(getMessage("setNameItemName")) || content == null) {
-                player.sendMessage(getMessage("nameOrContentNotSet"));
+            if (!nameSet || content == null) {
+                player.sendMessage(getComponent("nameOrContentNotSet"));
                 return;
             }
             plugin.getConfig().set("data.kits." + name + ".icon", iconMaterial.toString());
             plugin.getConfig().set("data.kits." + name + ".contents", content);
             plugin.saveConfig();
             plugin.reloadConfig();
-            player.sendMessage(getMessage("saved"));
+            player.sendMessage(getComponent("saved"));
         }
     }
 

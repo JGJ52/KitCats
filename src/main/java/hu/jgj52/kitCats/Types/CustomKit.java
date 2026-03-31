@@ -81,4 +81,9 @@ public class CustomKit {
         plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".player", null);
         save();
     }
+
+    public void delete() {
+        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name, null);
+        save();
+    }
 }

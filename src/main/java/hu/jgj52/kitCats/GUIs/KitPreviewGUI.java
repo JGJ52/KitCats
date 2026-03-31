@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.GUI;
 import hu.jgj52.kitCats.Types.Kit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,18 +33,18 @@ public class KitPreviewGUI extends GUI {
 
         ItemStack edit = new ItemStack(Material.BOOK);
         ItemMeta editMeta = edit.getItemMeta();
-        editMeta.setDisplayName(getMessage("editItemName"));
+        editMeta.displayName(getComponent("editItemName", true));
         edit.setItemMeta(editMeta);
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         ItemStack displayDefault = new ItemStack(Material.TARGET);
         ItemMeta displayDefaultMeta = displayDefault.getItemMeta();
-        displayDefaultMeta.setDisplayName(getMessage("displayDefaultItemName"));
-        displayDefaultMeta.setLore(List.of(getMessage(this.displayDefault ? "default" : "customized")));
+        displayDefaultMeta.displayName(getComponent("displayDefaultItemName", true));
+        displayDefaultMeta.lore(List.of(getComponent(this.displayDefault ? "default" : "customized")));
         displayDefault.setItemMeta(displayDefaultMeta);
 
         for (int i = 0; i < 54; i++) {

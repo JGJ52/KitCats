@@ -1,7 +1,10 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.GUI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,27 +58,27 @@ public class PageGUI extends GUI {
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("pageScrollerBackItemName"));
+        backMeta.displayName(getComponent("pageScrollerBackItemName", true));
         back.setItemMeta(backMeta);
 
         ItemStack forward = new ItemStack(Material.ARROW);
         ItemMeta forwardMeta = forward.getItemMeta();
-        forwardMeta.setDisplayName(getMessage("pageScrollerForwardItemName"));
+        forwardMeta.displayName(getComponent("pageScrollerForwardItemName", true));
         forward.setItemMeta(forwardMeta);
 
         ItemStack save = new ItemStack(Material.LIME_CONCRETE);
         ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("saveItemName"));
+        saveMeta.displayName(getComponent("saveItemName", true));
         save.setItemMeta(saveMeta);
 
         ItemStack addItem = new ItemStack(Material.WRITABLE_BOOK);
         ItemMeta addMeta = addItem.getItemMeta();
-        addMeta.setDisplayName(getMessage("addItemName"));
+        addMeta.displayName(getComponent("addItemName", true));
         addItem.setItemMeta(addMeta);
 
         ItemStack delete = new ItemStack(Material.RED_CONCRETE);
         ItemMeta deleteMeta = delete.getItemMeta();
-        deleteMeta.setDisplayName(getMessage("deleteItemMeta"));
+        deleteMeta.displayName(getComponent("deleteItemName", true));
         delete.setItemMeta(deleteMeta);
 
         for (int i = 0; i < 54; i++) {
@@ -114,12 +117,14 @@ public class PageGUI extends GUI {
             String name = ps.get(j + start);
             ConfigurationSection page = pages.getConfigurationSection(name);
             if (page == null) continue;
-            ItemStack p = new ItemStack(Material.matchMaterial(page.getString("icon")));
+            Material material = Material.matchMaterial(page.getString("icon", ""));
+            if (material == null) material = Material.APPLE;
+            ItemStack p = new ItemStack(material);
             ItemMeta pMeta = p.getItemMeta();
             if (name.equals(currentPage)) {
                 pMeta.setEnchantmentGlintOverride(true);
             }
-            pMeta.setDisplayName("§f" + name);
+            pMeta.displayName(Component.text(name).decoration(TextDecoration.ITALIC, false));
             p.setItemMeta(pMeta);
 
             gui.setItem(slot, p);
@@ -171,7 +176,7 @@ public class PageGUI extends GUI {
             }
         } else if (event.getSlot() >= 45 && event.getSlot() <= 51) {
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "empty"))) return;
-            currentPage = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            currentPage = PlainTextComponentSerializer.plainText().serialize(item.displayName());
             init(player);
         }
         if (event.getSlot() == 8) {
@@ -180,7 +185,7 @@ public class PageGUI extends GUI {
             ConfigurationSection section = plugin.getConfig().getConfigurationSection("customkits.pages");
             if (section != null) {
                 if (section.getKeys(false).size() <= 1) {
-                    player.sendMessage(getMessage("atLeastOne"));
+                    player.sendMessage(getComponent("atLeastOne"));
                     return;
                 }
             }
@@ -191,7 +196,7 @@ public class PageGUI extends GUI {
             plugin.getConfig().set("customkits.pages." + currentPage, null);
             plugin.saveConfig();
             plugin.reloadConfig();
-            player.sendMessage(getMessage("deleted"));
+            player.sendMessage(getComponent("deleted"));
             player.closeInventory();
         } else if (event.getSlot() <= 33) {
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "pageContent"), PersistentDataType.BOOLEAN)) {
@@ -243,7 +248,7 @@ public class PageGUI extends GUI {
             toSave.clear();
             plugin.saveConfig();
             plugin.reloadConfig();
-            player.sendMessage(getMessage("saved"));
+            player.sendMessage(getComponent("saved"));
             player.closeInventory();
         }
     }

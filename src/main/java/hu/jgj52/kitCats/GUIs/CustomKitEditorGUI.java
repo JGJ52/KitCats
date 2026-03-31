@@ -1,8 +1,12 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.KitCats;
 import hu.jgj52.kitCats.Types.CustomKit;
+import hu.jgj52.kitCats.Types.GUI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static hu.jgj52.kitCats.KitCats.customkits;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class CustomKitEditorGUI extends GUI {
@@ -52,11 +57,10 @@ public class CustomKitEditorGUI extends GUI {
     public void init(Player player) {
         f = false;
         b = false;
-        ConfigurationSection pages = plugin.getConfig().getConfigurationSection("customkits.pages");
-        if (pages == null) return;
+        ConfigurationSection pages = KitCats.pages.getConfig();
         if (pages.getKeys(false).isEmpty()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> player.closeInventory(), 1L);
-            player.sendMessage(getMessage("noPages"));
+            player.sendMessage(getComponent("noPages"));
             return;
         }
 
@@ -75,22 +79,22 @@ public class CustomKitEditorGUI extends GUI {
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("pageScrollerBackItemName"));
+        backMeta.displayName(getComponent("pageScrollerBackItemName", true));
         back.setItemMeta(backMeta);
 
         ItemStack forward = new ItemStack(Material.ARROW);
         ItemMeta forwardMeta = forward.getItemMeta();
-        forwardMeta.setDisplayName(getMessage("pageScrollerForwardItemName"));
+        forwardMeta.displayName(getComponent("pageScrollerForwardItemName", true));
         forward.setItemMeta(forwardMeta);
 
         ItemStack saveBack = new ItemStack(Material.ARROW);
         ItemMeta saveBackMeta = saveBack.getItemMeta();
-        saveBackMeta.setDisplayName(getMessage("backItemName"));
+        saveBackMeta.displayName(getComponent("backItemName", true));
         saveBack.setItemMeta(saveBackMeta);
 
         ItemStack save = new ItemStack(Material.LIME_CONCRETE);
         ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("saveItemName"));
+        saveMeta.displayName(getComponent("saveItemName", true));
         save.setItemMeta(saveMeta);
 
         for (int i = 0; i < 54; i++) {
@@ -124,12 +128,14 @@ public class CustomKitEditorGUI extends GUI {
             String name = ps.get(j + start);
             ConfigurationSection page = pages.getConfigurationSection(name);
             if (page == null) continue;
-            ItemStack p = new ItemStack(Material.matchMaterial(page.getString("icon")));
+            Material material = Material.matchMaterial(page.getString("icon", ""));
+            if (material == null) material = Material.APPLE;
+            ItemStack p = new ItemStack(material);
             ItemMeta pMeta = p.getItemMeta();
             if (name.equals(currentPage)) {
                 pMeta.setEnchantmentGlintOverride(true);
             }
-            pMeta.setDisplayName("§f" + name);
+            pMeta.displayName(Component.text(name).decoration(TextDecoration.ITALIC, false));
             p.setItemMeta(pMeta);
 
             gui.setItem(slot, p);
@@ -229,7 +235,7 @@ public class CustomKitEditorGUI extends GUI {
             }
         } else if (event.getSlot() >= 45 && event.getSlot() <= 51) {
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "empty"))) return;
-            currentPage = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            currentPage = PlainTextComponentSerializer.plainText().serialize(item.displayName());
             init(player);
         }
         if (event.getSlot() <= 33) {
@@ -273,16 +279,16 @@ public class CustomKitEditorGUI extends GUI {
                 }
                 contents[i] = player.getInventory().getContents()[i];
             }
-            plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + kit.getName() + ".contents", contents);
-            plugin.saveConfig();
-            plugin.reloadConfig();
+            customkits.getConfig().set(player.getUniqueId() + "." + kit.getName() + ".contents", contents);
+            customkits.saveConfig();
+            customkits.reloadConfig();
             kit.reloadContents();
             player.getInventory().setContents(inv);
             if (back != null) {
                 back.open(player);
             } else {
                 player.closeInventory();
-                player.sendMessage(getMessage("saved"));
+                player.sendMessage(getComponent("saved"));
             }
         }
     }

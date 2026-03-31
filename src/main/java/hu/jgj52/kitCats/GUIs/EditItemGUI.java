@@ -2,9 +2,10 @@ package hu.jgj52.kitCats.GUIs;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import hu.jgj52.kitCats.Listeners.ChatListener;
+import hu.jgj52.kitCats.Types.GUI;
 import hu.jgj52.kitCats.Types.Trim;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import hu.jgj52.libCats.Listeners.ChatListener;
+import hu.jgj52.libCats.Utils.RegistryFromName;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -47,22 +48,22 @@ public class EditItemGUI extends GUI {
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         ItemStack enchants = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta enchantsMeta = enchants.getItemMeta();
-        enchantsMeta.setDisplayName(getMessage("enchantsItemName"));
+        enchantsMeta.displayName(getComponent("enchantsItemName", true));
         enchants.setItemMeta(enchantsMeta);
 
         ItemStack name = new ItemStack(Material.PAPER);
         ItemMeta nameMeta = name.getItemMeta();
-        nameMeta.setDisplayName(getMessage("nameItemName"));
+        nameMeta.displayName(getComponent("nameItemName", true));
         name.setItemMeta(nameMeta);
 
         ItemStack content = new ItemStack(Material.CHEST);
         ItemMeta contentMeta = content.getItemMeta();
-        contentMeta.setDisplayName(getMessage("contentItemName"));
+        contentMeta.displayName(getComponent("contentItemName", true));
         content.setItemMeta(contentMeta);
 
         if (trim.trim() != null) {
@@ -77,23 +78,23 @@ public class EditItemGUI extends GUI {
         if (viaversion && Via.getAPI().getPlayerProtocolVersion(player.getUniqueId()).newerThanOrEqualTo(ProtocolVersion.v1_21_2) && Via.getAPI().getServerVersion().highestSupportedProtocolVersion().newerThanOrEqualTo(ProtocolVersion.v1_21_2)) {
             trim = new ItemStack(Material.PAPER);
             ItemMeta trimMeta = trim.getItemMeta();
-            trimMeta.setDisplayName(getMessage("trimPatternItemName"));
+            trimMeta.displayName(getComponent("trimPatternItemName", true));
             trimMeta.setItemModel(new NamespacedKey("minecraft", trimType.name().toLowerCase()));
             trim.setItemMeta(trimMeta);
         } else {
             trim = new ItemStack(trimType);
             ItemMeta trimMeta = trim.getItemMeta();
-            trimMeta.setDisplayName(getMessage("trimPatternItemName"));
+            trimMeta.displayName(getComponent("trimPatternItemName", true));
             trim.setItemMeta(trimMeta);
         }
 
         ItemStack trimMaterial = new ItemStack(this.trim.getMaterial() == null ? Material.RAW_IRON : this.trim.getMaterial());
         ItemMeta trimMaterialMeta = trimMaterial.getItemMeta();
-        trimMaterialMeta.setDisplayName(getMessage("trimMaterialItemName"));
+        trimMaterialMeta.displayName(getComponent("trimMaterialItemName", true));
         trimMaterial.setItemMeta(trimMaterialMeta);
 
         boolean enchantable = false;
-        for (Enchantment enchantment : Enchantment.values()) {
+        for (Enchantment enchantment : RegistryFromName.ENCHANTMENT()) {
             if (enchantment.canEnchantItem(this.item)) {
                 enchantable = true;
                 break;
@@ -140,13 +141,12 @@ public class EditItemGUI extends GUI {
                     break;
                 case 14:
                     player.closeInventory();
-                    player.sendMessage(getMessage("setNameMessage"));
+                    player.sendMessage(getComponent("setNameMessage"));
                     ChatListener.add(player, e -> {
                         ItemMeta im = this.item.getItemMeta();
-                        im.setDisplayName(PlainTextComponentSerializer.plainText().serialize(e.message()));
+                        im.displayName(e);
                         this.item.setItemMeta(im);
                         open(player);
-                        return true;
                     });
                     break;
                 case 15:

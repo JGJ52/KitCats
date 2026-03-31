@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.Types.GUI;
 import hu.jgj52.kitCats.Types.Kit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -42,17 +43,17 @@ public class EditKitGUI extends GUI {
 
         ItemStack reset = new ItemStack(Material.RED_CONCRETE);
         ItemMeta resetMeta = reset.getItemMeta();
-        resetMeta.setDisplayName(getMessage("resetItemName"));
+        resetMeta.displayName(getComponent("resetItemName", true));
         reset.setItemMeta(resetMeta);
 
         ItemStack save = new ItemStack(Material.LIME_CONCRETE);
         ItemMeta saveMeta = save.getItemMeta();
-        saveMeta.setDisplayName(getMessage("saveItemName"));
+        saveMeta.displayName(getComponent("saveItemName", true));
         save.setItemMeta(saveMeta);
 
         ItemStack back = new ItemStack(Material.ARROW);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(getMessage("backItemName"));
+        backMeta.displayName(getComponent("backItemName", true));
         back.setItemMeta(backMeta);
 
         for (int i = 0; i < 54; i++) {
@@ -124,9 +125,9 @@ public class EditKitGUI extends GUI {
             }
             boolean success = kit.setContents(contents, player);
             if (success) {
-                player.sendMessage(getMessage("success"));
+                player.sendMessage(getComponent("success"));
             } else {
-                player.sendMessage(getMessage("wrongContents"));
+                player.sendMessage(getComponent("wrongContents"));
             }
             player.closeInventory();
             for (ItemStack is : player.getInventory().getContents()) {

@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.Types;
 
+import hu.jgj52.libCats.Utils.RegistryFromName;
 import io.papermc.paper.registry.keys.TrimMaterialKeys;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
@@ -30,49 +31,10 @@ public class Trim {
     }
     public ArmorTrim trim() {
         if (getPattern() == null || getMaterial() == null) return null;
-        TrimPattern pattern = getPattern(getPattern());
-        TrimMaterial material = getMaterial(getMaterial());
+        TrimPattern pattern = RegistryFromName.TRIM_PATTERN(getMaterial().name().split("_")[0]);
+        TrimMaterial material = RegistryFromName.TRIM_MATERIAL(getMaterial().name().split("_")[0]);
         if (pattern == null || material == null) return null;
         return new ArmorTrim(material, pattern);
-    }
-    public static TrimPattern getPattern(Material template) {
-        return switch (template) {
-            case Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.BOLT;
-            case Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.COAST;
-            case Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.DUNE;
-            case Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.EYE;
-            case Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.FLOW;
-            case Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.HOST;
-            case Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.RAISER;
-            case Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.RIB;
-            case Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SENTRY;
-            case Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SHAPER;
-            case Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SILENCE;
-            case Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SNOUT;
-            case Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SPIRE;
-            case Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.TIDE;
-            case Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.VEX;
-            case Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WARD;
-            case Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WAYFINDER;
-            case Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WILD;
-            default -> null;
-        };
-    }
-    public static TrimMaterial getMaterial(Material material) {
-        return switch (material) {
-            case Material.COPPER_INGOT -> TrimMaterial.COPPER;
-            case Material.IRON_INGOT -> TrimMaterial.IRON;
-            case Material.RESIN_BRICK -> TrimMaterial.RESIN;
-            case Material.REDSTONE -> TrimMaterial.REDSTONE;
-            case Material.LAPIS_LAZULI -> TrimMaterial.LAPIS;
-            case Material.EMERALD -> TrimMaterial.EMERALD;
-            case Material.AMETHYST_SHARD -> TrimMaterial.AMETHYST;
-            case Material.QUARTZ -> TrimMaterial.QUARTZ;
-            case Material.NETHERITE_INGOT -> TrimMaterial.NETHERITE;
-            case Material.DIAMOND -> TrimMaterial.DIAMOND;
-            case Material.GOLD_INGOT -> TrimMaterial.GOLD;
-            default -> null;
-        };
     }
     public static List<Material> patterns() {
         return Arrays.stream(Material.values())

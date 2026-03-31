@@ -1,8 +1,10 @@
 name: KitCats
-version: '1.7'
+version: '2.0'
 main: hu.jgj52.kitCats.KitCats
 api-version: '1.21'
 authors: [ JGJ52 ]
+depend:
+  - LibCats
 softdepend:
   - ViaVersion
 commands:
