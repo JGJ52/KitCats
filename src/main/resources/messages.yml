@@ -73,7 +73,7 @@ guis:
     name: "Create a new kit"
     setNameItemName: "<white>Click this to set the name of the page</white> <grey>(required)</grey>"
     setIconItemName: "<white>Click this to set the icon of the page</white>"
-    setContentItemName: "<white>Click this to set the content of your kit</white>"
+    setContentItemName: "<white>Click this to set the content of your kit</white> <grey>(required)</grey>"
     saveItemName: "<green>Save</green>"
     setNameMessage: "<yellow>Type your kit's name to chat</yellow>"
     alreadyName: "<red>Name already taken!</red>"
