@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -245,7 +246,13 @@ public class EditShulkerGUI extends GUI {
     }
 
     @Override
+    public void onInteract(PlayerInteractEvent event) {
+        event.getPlayer().closeInventory();
+    }
+
+    @Override
     public void onClose(InventoryCloseEvent event) {
+        event.getPlayer().setItemOnCursor(new ItemStack(Material.AIR));
         event.getPlayer().getInventory().clear();
     }
 

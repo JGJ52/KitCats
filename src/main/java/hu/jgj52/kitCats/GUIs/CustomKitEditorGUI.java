@@ -312,11 +312,6 @@ public class CustomKitEditorGUI extends GUI {
     }
 
     @Override
-    public void onMove(PlayerMoveEvent event) {
-        event.getPlayer().closeInventory();
-    }
-
-    @Override
     public void onInteract(PlayerInteractEvent event) {
         event.getPlayer().closeInventory();
     }
@@ -328,6 +323,7 @@ public class CustomKitEditorGUI extends GUI {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        event.getPlayer().setItemOnCursor(new ItemStack(Material.AIR));
         event.getPlayer().getInventory().setContents(inv);
     }
 
