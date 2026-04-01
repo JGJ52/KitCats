@@ -8,20 +8,20 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static hu.jgj52.kitCats.KitCats.plugin;
+import static hu.jgj52.kitCats.KitCats.customkits;
 
 public class CustomKit {
     public static CustomKit of(String name, Player player) {
-        if (plugin.getConfig().get("data.customkits." + player.getUniqueId() + "." + name) == null) return null;
+        if (customkits.getConfig().get(player.getUniqueId() + "." + name) == null) return null;
         return new CustomKit(name, player);
     }
     private static void save() {
-        plugin.saveConfig();
-        plugin.reloadConfig();
+        customkits.saveConfig();
+        customkits.reloadConfig();
     }
 
     public static List<CustomKit> all(Player player) {
-        ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.customkits." + player.getUniqueId());
+        ConfigurationSection section = customkits.getConfig().getConfigurationSection(player.getUniqueId().toString());
         List<CustomKit> list = new ArrayList<>();
         if (section == null) return list;
         for (String name : section.getKeys(false)) {
@@ -31,8 +31,8 @@ public class CustomKit {
     }
 
     public static void create(Player player, String name, Material icon, ItemStack[] content) {
-        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".icon", icon.toString());
-        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".contents", content);
+        customkits.getConfig().set(player.getUniqueId() + "." + name + ".icon", icon.toString());
+        customkits.getConfig().set(player.getUniqueId() + "." + name + ".contents", content);
         save();
     }
 
@@ -44,16 +44,16 @@ public class CustomKit {
     private CustomKit (String name, Player player) {
         this.name = name;
         this.player = player;
-        Object obj = plugin.getConfig().get("data.customkits." + player.getUniqueId() + "." + name + ".contents");
+        Object obj = customkits.getConfig().get(player.getUniqueId() + "." + name + ".contents");
         if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
-        String icon = plugin.getConfig().getString("data.customkits." + player.getUniqueId() + "." + name + ".icon");
+        String icon = customkits.getConfig().getString(player.getUniqueId() + "." + name + ".icon");
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
     public void reloadContents() {
-        Object obj = plugin.getConfig().get("data.customkits." + player.getUniqueId() + "." + name + ".contents");
+        Object obj = customkits.getConfig().get(player.getUniqueId() + "." + name + ".contents");
         if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
-        String icon = plugin.getConfig().getString("data.customkits." + player.getUniqueId() + "." + name + ".icon");
+        String icon = customkits.getConfig().getString(player.getUniqueId() + "." + name + ".icon");
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
@@ -77,13 +77,13 @@ public class CustomKit {
 
     public void setContents(ItemStack[] contents) {
         this.contents = contents;
-        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".contents", contents);
-        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name + ".player", null);
+        customkits.getConfig().set(player.getUniqueId() + "." + name + ".contents", contents);
+        customkits.getConfig().set(player.getUniqueId() + "." + name + ".player", null);
         save();
     }
 
     public void delete() {
-        plugin.getConfig().set("data.customkits." + player.getUniqueId() + "." + name, null);
+        customkits.getConfig().set(player.getUniqueId() + "." + name, null);
         save();
     }
 }

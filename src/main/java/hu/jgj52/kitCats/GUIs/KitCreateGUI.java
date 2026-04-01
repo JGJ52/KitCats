@@ -83,10 +83,10 @@ public class KitCreateGUI extends GUI {
                 player.sendMessage(getComponent("nameOrContentNotSet"));
                 return;
             }
-            plugin.getConfig().set("data.kits." + name + ".icon", iconMaterial.toString());
-            plugin.getConfig().set("data.kits." + name + ".contents", content);
-            plugin.saveConfig();
-            plugin.reloadConfig();
+            kits.getConfig().set(name + ".icon", iconMaterial.toString());
+            kits.getConfig().set(name + ".contents", content);
+            kits.saveConfig();
+            kits.reloadConfig();
             player.sendMessage(getComponent("saved"));
         }
     }

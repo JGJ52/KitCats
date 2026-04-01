@@ -14,22 +14,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static hu.jgj52.kitCats.KitCats.kits;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class Kit {
     public static Kit of(String name) {
-        if (plugin.getConfig().get("data.kits." + name) == null) return null;
+        if (kits.getConfig().get(name) == null) return null;
         return new Kit(name);
     }
     private static void save() {
-        plugin.saveConfig();
-        plugin.reloadConfig();
+        kits.saveConfig();
+        kits.reloadConfig();
     }
 
     public static List<Kit> all() {
-        ConfigurationSection section = plugin.getConfig().getConfigurationSection("data.kits");
+        ConfigurationSection section = kits.getConfig();
         List<Kit> list = new ArrayList<>();
-        if (section == null) return list;
         for (String name : section.getKeys(false)) {
             list.add(of(name));
         }
@@ -42,16 +42,16 @@ public class Kit {
 
     private Kit (String name) {
         this.name = name;
-        Object obj = plugin.getConfig().get("data.kits." + name + ".contents");
+        Object obj = kits.getConfig().get(name + ".contents");
         if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
-        String icon = plugin.getConfig().getString("data.kits." + name + ".icon");
+        String icon = kits.getConfig().getString(name + ".icon");
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
     public void reloadContents() {
-        Object obj = plugin.getConfig().get("data.kits." + name + ".contents");
+        Object obj = kits.getConfig().get(name + ".contents");
         if (obj instanceof List<?> list) contents = list.toArray(new ItemStack[0]); else contents = new ItemStack[0];
-        String icon = plugin.getConfig().getString("data.kits." + name + ".icon");
+        String icon = kits.getConfig().getString(name + ".icon");
         if (icon != null) this.icon = Material.matchMaterial(icon);
     }
 
@@ -92,7 +92,7 @@ public class Kit {
     }
 
     public ItemStack[] getContents(Player player, Boolean defaultSlot) {
-        ConfigurationSection custom = plugin.getConfig().getConfigurationSection("data.kits." + name + ".player." + player.getUniqueId());
+        ConfigurationSection custom = kits.getConfig().getConfigurationSection(name + ".player." + player.getUniqueId());
         if (custom == null) return getContents(defaultSlot);
         ItemStack[] contents = new ItemStack[getContents(defaultSlot).length];
         for (String key : custom.getKeys(false)) {
@@ -114,8 +114,8 @@ public class Kit {
     @Warning(reason = "This will delete all player-customized kits")
     public void setContents(ItemStack[] contents) {
         this.contents = contents;
-        plugin.getConfig().set("data.kits." + name + ".contents", contents);
-        plugin.getConfig().set("data.kits." + name + ".player", null);
+        kits.getConfig().set(name + ".contents", contents);
+        kits.getConfig().set(name + ".player", null);
         save();
     }
 
@@ -145,18 +145,18 @@ public class Kit {
             }
         }
         if (nulls != dNulls || notNulls != dNotNulls) return false;
-        plugin.getConfig().set("data.kits." + name + ".player." + player.getUniqueId(), cont);
+        kits.getConfig().set(name + ".player." + player.getUniqueId(), cont);
         save();
         return true;
     }
 
     public void removeContents(Player player) {
-        plugin.getConfig().set("data.kits." + name + ".player." + player.getUniqueId(), null);
+        kits.getConfig().set(name + ".player." + player.getUniqueId(), null);
         save();
     }
 
     public void delete() {
-        plugin.getConfig().set("data.kits." + name, null);
+        kits.getConfig().set(name, null);
         save();
     }
 }

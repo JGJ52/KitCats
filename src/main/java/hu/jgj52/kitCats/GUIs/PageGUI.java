@@ -1,5 +1,6 @@
 package hu.jgj52.kitCats.GUIs;
 
+import hu.jgj52.kitCats.KitCats;
 import hu.jgj52.kitCats.Types.GUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -17,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
+import static hu.jgj52.kitCats.KitCats.pages;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class PageGUI extends GUI {
@@ -29,7 +31,7 @@ public class PageGUI extends GUI {
     public void init(Player player) {
         f = false;
         b = false;
-        ConfigurationSection pages = plugin.getConfig().getConfigurationSection("customkits.pages");
+        ConfigurationSection pages = KitCats.pages.getConfig();
         if (pages == null) return;
         if (pages.getKeys(false).isEmpty()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> new CreatePageGUI(this).open(player), 1L);
@@ -130,7 +132,7 @@ public class PageGUI extends GUI {
             gui.setItem(slot, p);
             slot++;
         }
-        List<String> items = toSave.containsKey("customkits.pages." + currentPage + ".items") ? (List<String>) toSave.get("customkits.pages." + currentPage + ".items") : pages.getStringList(currentPage + ".items");
+        List<String> items = toSave.containsKey(currentPage + ".items") ? (List<String>) toSave.get(currentPage + ".items") : pages.getStringList(currentPage + ".items");
         int i = 0;
         for (String m : items) {
             if (i > 33) break;
@@ -141,7 +143,7 @@ public class PageGUI extends GUI {
             } else {
                 is = new ItemStack(material, material.getMaxStackSize());
                 ItemMeta im = is.getItemMeta();
-                ConfigurationSection metas = toSave.containsKey("customkits.pages." + currentPage + ".metas") ? (ConfigurationSection) toSave.get("customkits.pages." + currentPage + ".metas") : pages.getConfigurationSection(currentPage + ".metas");
+                ConfigurationSection metas = toSave.containsKey(currentPage + ".metas") ? (ConfigurationSection) toSave.get(currentPage + ".metas") : pages.getConfigurationSection(currentPage + ".metas");
                 if (metas != null) {
                     int a = 0;
                     if (i > 8) a--;
@@ -182,7 +184,7 @@ public class PageGUI extends GUI {
         if (event.getSlot() == 8) {
             new CreatePageGUI(this).open(player);
         } else if (event.getSlot() == 17) {
-            ConfigurationSection section = plugin.getConfig().getConfigurationSection("customkits.pages");
+            ConfigurationSection section = pages.getConfig();
             if (section != null) {
                 if (section.getKeys(false).size() <= 1) {
                     player.sendMessage(getComponent("atLeastOne"));
@@ -190,12 +192,12 @@ public class PageGUI extends GUI {
                 }
             }
             for (String key : toSave.keySet()) {
-                plugin.getConfig().set(key, toSave.get(key));
+                pages.getConfig().set(key, toSave.get(key));
             }
             toSave.clear();
-            plugin.getConfig().set("customkits.pages." + currentPage, null);
-            plugin.saveConfig();
-            plugin.reloadConfig();
+            pages.getConfig().set(currentPage, null);
+            pages.saveConfig();
+            pages.reloadConfig();
             player.sendMessage(getComponent("deleted"));
             player.closeInventory();
         } else if (event.getSlot() <= 33) {
@@ -222,7 +224,7 @@ public class PageGUI extends GUI {
                 iMeta.getPersistentDataContainer().remove(new NamespacedKey(plugin, "pageContent"));
                 i.setItemMeta(iMeta);
                 player.setItemOnCursor(!item.isSimilar(inline) ? i : null);
-                List<String> list = toSave.containsKey("customkits.pages." + currentPage + ".items") ? (List<String>) toSave.get("customkits.pages." + currentPage + ".items") : plugin.getConfig().getStringList("customkits.pages." + currentPage + ".items");
+                List<String> list = toSave.containsKey(currentPage + ".items") ? (List<String>) toSave.get(currentPage + ".items") : pages.getConfig().getStringList(currentPage + ".items");
                 int add = 0;
                 if (event.getSlot() > 8) add--;
                 if (event.getSlot() > 17) add--;
@@ -232,22 +234,22 @@ public class PageGUI extends GUI {
                     list.addAll(Collections.nCopies(index - list.size() + 1, Material.AIR.name()));
                 }
                 list.set(index, n ? Material.AIR.name() : cursor.getType().name());
-                ConfigurationSection metas = plugin.getConfig().getConfigurationSection("customkits.pages." + currentPage + ".metas");
-                if (metas == null) metas = plugin.getConfig().createSection("customkits.pages." + currentPage + ".metas");
+                ConfigurationSection metas = pages.getConfig().getConfigurationSection(currentPage + ".metas");
+                if (metas == null) metas = pages.getConfig().createSection(currentPage + ".metas");
                 if (!n) {
                     metas.set(String.valueOf(index), beforeCursor.getItemMeta());
-                    toSave.put("customkits.pages." + currentPage + ".metas", metas);
+                    toSave.put(currentPage + ".metas", metas);
                 }
-                toSave.put("customkits.pages." + currentPage + ".items", list);
+                toSave.put(currentPage + ".items", list);
             }
         } else if (event.getSlot() == 53) {
             // this toSave's getter is very bad but i dont wanna make a class for it
             for (String key : toSave.keySet()) {
-                plugin.getConfig().set(key, toSave.get(key));
+                pages.getConfig().set(key, toSave.get(key));
             }
             toSave.clear();
-            plugin.saveConfig();
-            plugin.reloadConfig();
+            pages.saveConfig();
+            pages.reloadConfig();
             player.sendMessage(getComponent("saved"));
             player.closeInventory();
         }
