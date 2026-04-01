@@ -124,9 +124,9 @@ public class PageGUI extends GUI {
             ItemStack p = new ItemStack(material);
             ItemMeta pMeta = p.getItemMeta();
             if (name.equals(currentPage)) {
-                System.out.println("name: " + name + " | currentPage: " + currentPage);
                 pMeta.setEnchantmentGlintOverride(true);
             }
+            pMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "name"), PersistentDataType.STRING, name);
             pMeta.displayName(Component.text(name).decoration(TextDecoration.ITALIC, false));
             p.setItemMeta(pMeta);
 
@@ -179,7 +179,7 @@ public class PageGUI extends GUI {
             }
         } else if (event.getSlot() >= 45 && event.getSlot() <= 51) {
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "empty"))) return;
-            currentPage = PlainTextComponentSerializer.plainText().serialize(item.displayName());
+            currentPage = item.getPersistentDataContainer().get(new NamespacedKey(plugin, "name"), PersistentDataType.STRING);
             init(player);
         }
         if (event.getSlot() == 8) {
