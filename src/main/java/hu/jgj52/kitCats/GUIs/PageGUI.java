@@ -124,6 +124,7 @@ public class PageGUI extends GUI {
             ItemStack p = new ItemStack(material);
             ItemMeta pMeta = p.getItemMeta();
             if (name.equals(currentPage)) {
+                System.out.println("name: " + name + " | currentPage: " + currentPage);
                 pMeta.setEnchantmentGlintOverride(true);
             }
             pMeta.displayName(Component.text(name).decoration(TextDecoration.ITALIC, false));

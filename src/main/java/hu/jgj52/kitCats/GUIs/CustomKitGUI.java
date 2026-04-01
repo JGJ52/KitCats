@@ -26,51 +26,63 @@ public class CustomKitGUI extends GUI {
     @Override
     public void init(Player player) {
         ConfigurationSection section = customkits.getConfig().getConfigurationSection(player.getUniqueId().toString());
-        if (section == null) return;
-        List<String> list = new ArrayList<>(section.getKeys(false));
-        Collections.sort(list);
-        int start = page * 28;
-        int end = Math.min(start + 28, list.size());
-        int slot = 10;
-        for (int j = 0; j < list.subList(start, end).size(); j++) {
-            String name = list.get(start + j);
-            CustomKit kit = CustomKit.of(name, player);
-            if (kit == null) return;
-            ItemStack icon = new ItemStack(Material.BRICKS);
-            ItemMeta iconMeta = icon.getItemMeta();
-            iconMeta.displayName(Component.text(kit.getName()).decoration(TextDecoration.ITALIC, false));
-            if (player.hasPermission("kitcats.command.customkit.create")) {
-                iconMeta.lore(getComponentList("iconLore", true));
+        if (section != null) {
+            List<String> list = new ArrayList<>(section.getKeys(false));
+            Collections.sort(list);
+            int start = page * 28;
+            int end = Math.min(start + 28, list.size());
+            int slot = 10;
+            for (int j = 0; j < list.subList(start, end).size(); j++) {
+                String name = list.get(start + j);
+                CustomKit kit = CustomKit.of(name, player);
+                if (kit == null) return;
+                ItemStack icon = new ItemStack(Material.BRICKS);
+                ItemMeta iconMeta = icon.getItemMeta();
+                iconMeta.displayName(Component.text(kit.getName()).decoration(TextDecoration.ITALIC, false));
+                if (player.hasPermission("kitcats.command.customkit.create")) {
+                    iconMeta.lore(getComponentList("iconLore", true));
+                }
+                iconMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customkit"), PersistentDataType.STRING, kit.getName());
+                icon.setItemMeta(iconMeta);
+                gui.setItem(slot, icon);
+                slot++;
+                if ((slot + 1) % 9 == 0) slot += 2;
             }
-            iconMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "arena"), PersistentDataType.BOOLEAN, true);
-            icon.setItemMeta(iconMeta);
-            gui.setItem(slot, icon);
-            slot++;
-            if ((slot + 1) % 9 == 0) slot += 2;
-        }
-        ItemStack outline = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemMeta outlineMeta = outline.getItemMeta();
-        outlineMeta.setHideTooltip(true);
-        outline.setItemMeta(outlineMeta);
+            ItemStack outline = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+            ItemMeta outlineMeta = outline.getItemMeta();
+            outlineMeta.setHideTooltip(true);
+            outline.setItemMeta(outlineMeta);
 
-        ItemStack inline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta inlineMeta = inline.getItemMeta();
-        inlineMeta.setHideTooltip(true);
-        inline.setItemMeta(inlineMeta);
-        for (int i = slot; slot < 44; i++) {
-            gui.setItem(slot, inline);
-            slot++;
-            if ((slot + 1) % 9 == 0) slot += 2;
-        }
-        ItemStack previous = new ItemStack(Material.ARROW);
-        ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(getComponent("previousArrow", true));
-        previous.setItemMeta(previousMeta);
+            ItemStack inline = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+            ItemMeta inlineMeta = inline.getItemMeta();
+            inlineMeta.setHideTooltip(true);
+            inline.setItemMeta(inlineMeta);
+            for (int i = slot; slot < 44; i++) {
+                gui.setItem(slot, inline);
+                slot++;
+                if ((slot + 1) % 9 == 0) slot += 2;
+            }
+            ItemStack previous = new ItemStack(Material.ARROW);
+            ItemMeta previousMeta = previous.getItemMeta();
+            previousMeta.displayName(getComponent("previousArrow", true));
+            previous.setItemMeta(previousMeta);
 
-        ItemStack next = new ItemStack(Material.ARROW);
-        ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(getComponent("nextArrow", true));
-        next.setItemMeta(nextMeta);
+            ItemStack next = new ItemStack(Material.ARROW);
+            ItemMeta nextMeta = next.getItemMeta();
+            nextMeta.displayName(getComponent("nextArrow", true));
+            next.setItemMeta(nextMeta);
+
+            if (page > 0) {
+                gui.setItem(45, previous);
+            } else {
+                gui.setItem(45, outline);
+            }
+            if (list.size() > 28 && end == 28) {
+                gui.setItem(53, next);
+            } else {
+                gui.setItem(53, outline);
+            }
+        }
 
         ItemStack create = new ItemStack(Material.BOOK);
         ItemMeta createMeta = create.getItemMeta();
@@ -79,16 +91,6 @@ public class CustomKitGUI extends GUI {
 
         if (player.hasPermission("kitcats.command.customkit.create")) {
             gui.setItem(4, create);
-        }
-        if (page > 0) {
-            gui.setItem(45, previous);
-        } else {
-            gui.setItem(45, outline);
-        }
-        if (list.size() > 28 && end == 28) {
-            gui.setItem(53, next);
-        } else {
-            gui.setItem(53, outline);
         }
     }
 
@@ -112,18 +114,19 @@ public class CustomKitGUI extends GUI {
                 new CustomKitCreateGUI().open(player);
             }
         } else {
-            if (event.getCurrentItem() == null) return;
-            Component name = event.getCurrentItem().displayName();
-            if (event.getCurrentItem().getPersistentDataContainer().has(new NamespacedKey(plugin, "arena"))) {
-                CustomKit kit = CustomKit.of(PlainTextComponentSerializer.plainText().serialize(name), player);
-                if (kit == null) return;
-                if (event.getClick().isLeftClick()) {
-                    if (player.hasPermission("kitcats.command.customkit.load")) {
-                        player.getInventory().setContents(kit.getContents());
-                    }
-                } else if (event.getClick().isRightClick()) {
-                    if (player.hasPermission("kitcats.command.customkit.preview")) {
-                        new CustomKitPreviewGUI(kit, this).open(player);
+            if (item != null) {
+                String name = item.getPersistentDataContainer().get(new NamespacedKey(plugin, "customkit"), PersistentDataType.STRING);
+                if (name != null) {
+                    CustomKit kit = CustomKit.of(name, player);
+                    if (kit == null) return;
+                    if (event.getClick().isLeftClick()) {
+                        if (player.hasPermission("kitcats.command.customkit.load")) {
+                            player.getInventory().setContents(kit.getContents());
+                        }
+                    } else if (event.getClick().isRightClick()) {
+                        if (player.hasPermission("kitcats.command.customkit.preview")) {
+                            new CustomKitPreviewGUI(kit, this).open(player);
+                        }
                     }
                 }
             }

@@ -52,7 +52,7 @@ public class CreatePageGUI extends GUI {
                     back.open(player);
                     break;
                 }
-                pages.getConfig().set(name + ".icon", icon.name());
+                pages.getConfig().set(PlainTextComponentSerializer.plainText().serialize(name) + ".icon", icon.name());
                 pages.saveConfig();
                 pages.reloadConfig();
                 back.open(player);

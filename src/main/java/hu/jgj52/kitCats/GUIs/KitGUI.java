@@ -2,6 +2,7 @@ package hu.jgj52.kitCats.GUIs;
 
 import hu.jgj52.kitCats.Types.CustomKit;
 import hu.jgj52.kitCats.Types.GUI;
+import hu.jgj52.kitCats.Types.Kit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -33,7 +34,7 @@ public class KitGUI extends GUI {
         int slot = 10;
         for (int j = 0; j < list.subList(start, end).size(); j++) {
             String name = list.get(start + j);
-            CustomKit kit = CustomKit.of(name, player);
+            Kit kit = Kit.of(name);
             if (kit == null) return;
             ItemStack icon = new ItemStack(Material.BRICKS);
             ItemMeta iconMeta = icon.getItemMeta();
@@ -41,7 +42,7 @@ public class KitGUI extends GUI {
             if (player.hasPermission("kitcats.command.kit.create")) {
                 iconMeta.lore(getComponentList("iconLore", true));
             }
-            iconMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "arena"), PersistentDataType.BOOLEAN, true);
+            iconMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "kit"), PersistentDataType.STRING, kit.getName());
             icon.setItemMeta(iconMeta);
             gui.setItem(slot, icon);
             slot++;
@@ -108,21 +109,22 @@ public class KitGUI extends GUI {
             }
         } else if (event.getSlot() == 4) {
             if (player.hasPermission("kitcats.command.kit.create")) {
-                new CustomKitCreateGUI().open(player);
+                new KitCreateGUI().open(player);
             }
         } else {
-            if (event.getCurrentItem() == null) return;
-            Component name = event.getCurrentItem().displayName();
-            if (event.getCurrentItem().getPersistentDataContainer().has(new NamespacedKey(plugin, "arena"))) {
-                CustomKit kit = CustomKit.of(PlainTextComponentSerializer.plainText().serialize(name), player);
-                if (kit == null) return;
-                if (event.getClick().isLeftClick()) {
-                    if (player.hasPermission("kitcats.command.kit.load")) {
-                        player.getInventory().setContents(kit.getContents());
-                    }
-                } else if (event.getClick().isRightClick()) {
-                    if (player.hasPermission("kitcats.command.kit.preview")) {
-                        new CustomKitPreviewGUI(kit, this).open(player);
+            if (item != null) {
+                String name = item.getPersistentDataContainer().get(new NamespacedKey(plugin, "kit"), PersistentDataType.STRING);
+                if (name != null) {
+                    Kit kit = Kit.of(name);
+                    if (kit == null) return;
+                    if (event.getClick().isLeftClick()) {
+                        if (player.hasPermission("kitcats.command.kit.load")) {
+                            player.getInventory().setContents(kit.getContents());
+                        }
+                    } else if (event.getClick().isRightClick()) {
+                        if (player.hasPermission("kitcats.command.kit.preview")) {
+                            new KitPreviewGUI(kit, this).open(player);
+                        }
                     }
                 }
             }

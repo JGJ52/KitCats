@@ -68,6 +68,7 @@ public class CustomKitCreateGUI extends GUI {
                 if (names.contains(name)) {
                     player.sendMessage(getComponent("alreadyName"));
                 } else {
+                    nameSet = true;
                     this.name = e;
                 }
                 open(player);

@@ -36,6 +36,13 @@ public class Kit {
         return list;
     }
 
+    public static void create(String name, Material icon, ItemStack[] contents) {
+        kits.getConfig().set(name + ".icon", icon.toString());
+        kits.getConfig().set(name + ".contents", contents);
+        kits.saveConfig();
+        kits.reloadConfig();
+    }
+
     private final String name;
     private ItemStack[] contents;
     private Material icon;

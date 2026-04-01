@@ -1,6 +1,7 @@
 package hu.jgj52.kitCats.GUIs;
 
 import hu.jgj52.kitCats.Types.GUI;
+import hu.jgj52.kitCats.Types.Kit;
 import hu.jgj52.libCats.Listeners.ChatListener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -83,10 +84,7 @@ public class KitCreateGUI extends GUI {
                 player.sendMessage(getComponent("nameOrContentNotSet"));
                 return;
             }
-            kits.getConfig().set(name + ".icon", iconMaterial.toString());
-            kits.getConfig().set(name + ".contents", content);
-            kits.saveConfig();
-            kits.reloadConfig();
+            Kit.create(PlainTextComponentSerializer.plainText().serialize(name), iconMaterial, content);
             player.sendMessage(getComponent("saved"));
         }
     }
