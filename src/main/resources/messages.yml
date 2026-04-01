@@ -71,7 +71,7 @@ guis:
     backItemName: "<white>Back</white>"
   KitCreateGUI:
     name: "Create a new kit"
-    setNameItemName: "<white>Click this to set the name of the page</white> <grey>(required)</gray>"
+    setNameItemName: "<white>Click this to set the name of the page</white> <grey>(required)</grey>"
     setIconItemName: "<white>Click this to set the icon of the page</white>"
     setContentItemName: "<white>Click this to set the content of your kit</white>"
     saveItemName: "<green>Save</green>"
