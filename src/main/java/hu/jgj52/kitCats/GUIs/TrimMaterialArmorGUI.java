@@ -12,11 +12,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class TrimMaterialArmorGUI extends GUI {
-    private final GUI back;
+    private final hu.jgj52.libCats.Types.GUI back;
     private final ItemStack item;
     private final Trim trim;
     private Material current;
-    public TrimMaterialArmorGUI(GUI back, ItemStack item, Trim trim) {
+    public TrimMaterialArmorGUI(hu.jgj52.libCats.Types.GUI back, ItemStack item, Trim trim) {
         this.back = back;
         this.item = item;
         this.trim = trim;

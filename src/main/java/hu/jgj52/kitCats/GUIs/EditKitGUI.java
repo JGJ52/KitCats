@@ -23,11 +23,11 @@ import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class EditKitGUI extends GUI {
     private final Kit kit;
-    private GUI back;
+    private hu.jgj52.libCats.Types.GUI back;
     public EditKitGUI(Kit kit) {
         this.kit = kit;
     }
-    public EditKitGUI(Kit kit, GUI back) {
+    public EditKitGUI(Kit kit, hu.jgj52.libCats.Types.GUI back) {
         this.kit = kit;
         this.back = back;
     }

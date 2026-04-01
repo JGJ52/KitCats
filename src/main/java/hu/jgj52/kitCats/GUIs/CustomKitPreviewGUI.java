@@ -10,11 +10,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class CustomKitPreviewGUI extends GUI {
     private final CustomKit kit;
-    private GUI back;
+    private hu.jgj52.libCats.Types.GUI back;
     public CustomKitPreviewGUI(CustomKit kit) {
         this.kit = kit;
     }
-    public CustomKitPreviewGUI(CustomKit kit, GUI back) {
+    public CustomKitPreviewGUI(CustomKit kit, hu.jgj52.libCats.Types.GUI back) {
         this.kit = kit;
         this.back = back;
     }

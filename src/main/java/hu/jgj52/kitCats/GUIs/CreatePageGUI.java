@@ -16,8 +16,8 @@ public class CreatePageGUI extends GUI {
     private Component name = getComponent("nameItemName", true);
     private Material icon = Material.APPLE;
     private boolean nameSet = false;
-    private final GUI back;
-    public CreatePageGUI(GUI back) {
+    private final hu.jgj52.libCats.Types.GUI back;
+    public CreatePageGUI(hu.jgj52.libCats.Types.GUI back) {
         this.back = back;
     }
     @Override

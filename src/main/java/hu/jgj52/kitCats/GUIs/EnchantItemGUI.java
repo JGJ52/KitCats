@@ -24,11 +24,11 @@ import java.util.Map;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class EnchantItemGUI extends GUI {
-    private final GUI back;
+    private final hu.jgj52.libCats.Types.hu.jgj52.libCats.Types.GUI back;
     private final ItemStack item;
     private final Map<Enchantment, Integer> levels = new HashMap<>();
     private final Map<Integer, Enchantment> slots = new HashMap<>();
-    public EnchantItemGUI(GUI back, ItemStack item) {
+    public EnchantItemGUI(hu.jgj52.libCats.Types.GUI back, ItemStack item) {
         this.back = back;
         this.item = item;
 

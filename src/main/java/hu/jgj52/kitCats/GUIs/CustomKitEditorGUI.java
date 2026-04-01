@@ -30,16 +30,16 @@ import static hu.jgj52.kitCats.KitCats.customkits;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class CustomKitEditorGUI extends GUI {
-    private final GUI back;
+    private final hu.jgj52.libCats.Types.GUI back;
     private final ItemStack[] contents;
     private final CustomKit kit;
     private ItemStack[] inv;
-    public CustomKitEditorGUI(GUI back, ItemStack[] contents) {
+    public CustomKitEditorGUI(hu.jgj52.libCats.Types.GUI back, ItemStack[] contents) {
         this.back = back;
         this.contents = contents;
         this.kit = null;
     }
-    public CustomKitEditorGUI(GUI back, CustomKit kit) {
+    public CustomKitEditorGUI(hu.jgj52.libCats.Types.GUI back, CustomKit kit) {
         this.back = back;
         this.contents = null;
         this.kit = kit;

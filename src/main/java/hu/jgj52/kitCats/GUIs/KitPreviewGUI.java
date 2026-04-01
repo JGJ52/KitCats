@@ -12,12 +12,12 @@ import java.util.List;
 
 public class KitPreviewGUI extends GUI {
     private final Kit kit;
-    private GUI back;
+    private hu.jgj52.libCats.Types.GUI back;
     private boolean displayDefault = false;
     public KitPreviewGUI(Kit kit) {
         this.kit = kit;
     }
-    public KitPreviewGUI(Kit kit, GUI back) {
+    public KitPreviewGUI(Kit kit, hu.jgj52.libCats.Types.GUI back) {
         this.kit = kit;
         this.back = back;
     }

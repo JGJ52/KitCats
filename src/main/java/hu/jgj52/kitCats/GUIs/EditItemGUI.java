@@ -20,13 +20,13 @@ import java.util.List;
 import static hu.jgj52.kitCats.KitCats.viaversion;
 
 public class EditItemGUI extends GUI {
-    private final GUI back;
+    private final hu.jgj52.libCats.Types.GUI back;
     private final ItemStack item;
     private final ItemStack[] inv;
     private final boolean armor;
     private final Trim trim = new Trim(null, null);
     private final boolean shulker;
-    public EditItemGUI(GUI back, ItemStack item, ItemStack[] inv, boolean armor) {
+    public EditItemGUI(hu.jgj52.libCats.Types.GUI back, ItemStack item, ItemStack[] inv, boolean armor) {
         this.back = back;
         this.item = item;
         this.inv = inv;

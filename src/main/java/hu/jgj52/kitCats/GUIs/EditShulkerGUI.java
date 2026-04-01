@@ -28,10 +28,10 @@ import java.util.List;
 import static hu.jgj52.kitCats.KitCats.plugin;
 
 public class EditShulkerGUI extends GUI {
-    private final GUI back;
+    private final hu.jgj52.libCats.Types.GUI back;
     private final ItemStack item;
     private ItemStack[] inv;
-    public EditShulkerGUI(GUI back, ItemStack item) {
+    public EditShulkerGUI(hu.jgj52.libCats.Types.GUI back, ItemStack item) {
         this.back = back;
         this.item = item;
     }
