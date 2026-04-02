@@ -152,6 +152,7 @@ public class EditKitGUI extends GUI {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        event.getPlayer().setItemOnCursor(new ItemStack(Material.AIR));
         for (ItemStack is : event.getPlayer().getInventory().getContents()) {
             if (is != null && kit.getName().equals(is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "kitName"), PersistentDataType.STRING))) {
                 event.getPlayer().getInventory().remove(is);
