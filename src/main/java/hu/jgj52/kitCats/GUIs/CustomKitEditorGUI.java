@@ -280,9 +280,7 @@ public class CustomKitEditorGUI extends GUI {
                 }
                 contents[i] = player.getInventory().getContents()[i];
             }
-            customkits.getConfig().set(player.getUniqueId() + "." + kit.getName() + ".contents", contents);
-            customkits.saveConfig();
-            customkits.reloadConfig();
+            kit.setContents(contents);
             kit.reloadContents();
             player.getInventory().setContents(inv);
             if (back != null) {

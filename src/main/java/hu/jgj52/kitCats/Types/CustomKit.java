@@ -78,7 +78,6 @@ public class CustomKit {
     public void setContents(ItemStack[] contents) {
         this.contents = contents;
         customkits.getConfig().set(player.getUniqueId() + "." + name + ".contents", contents);
-        customkits.getConfig().set(player.getUniqueId() + "." + name + ".player", null);
         save();
     }
 

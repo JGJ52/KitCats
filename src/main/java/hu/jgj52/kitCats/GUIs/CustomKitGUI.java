@@ -36,7 +36,7 @@ public class CustomKitGUI extends GUI {
                 String name = list.get(start + j);
                 CustomKit kit = CustomKit.of(name, player);
                 if (kit == null) return;
-                ItemStack icon = new ItemStack(Material.BRICKS);
+                ItemStack icon = new ItemStack(kit.getIcon());
                 ItemMeta iconMeta = icon.getItemMeta();
                 iconMeta.displayName(Component.text(kit.getName()).decoration(TextDecoration.ITALIC, false));
                 if (player.hasPermission("kitcats.command.customkit.create")) {

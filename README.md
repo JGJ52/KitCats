@@ -22,7 +22,7 @@ cd KitCats
 <dependency>
   <groupId>hu.jgj52</groupId>
   <artifactId>KitCats</artifactId>
-  <version>2.3</version>
+  <version>2.5</version>
   <scope>provided</scope>
 </dependency>
 </dependencies>

@@ -36,7 +36,7 @@ public class KitGUI extends GUI {
             String name = list.get(start + j);
             Kit kit = Kit.of(name);
             if (kit == null) return;
-            ItemStack icon = new ItemStack(Material.BRICKS);
+            ItemStack icon = new ItemStack(kit.getIcon());
             ItemMeta iconMeta = icon.getItemMeta();
             iconMeta.displayName(Component.text(kit.getName()).decoration(TextDecoration.ITALIC, false));
             if (player.hasPermission("kitcats.command.kit.create")) {
